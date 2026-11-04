@@ -121,7 +121,7 @@ function addCatalogs(){
    const chosen=select('Schweißzusatz aus Katalog',[],'Zusatz auswählen');
    fillerSection.append(manufacturers.l,chosen.l);
    const note=document.createElement('p');note.className='material-note';note.textContent='Katalog: Musterklassifizierungen. Hersteller-Zuordnung und Produktzulassungen müssen anhand des konkreten Produkts geprüft werden.';fillerSection.append(note);
-   for(const path of ['filler.designation','filler.standard','filler.diameter_mm','filler.manufacturer']){
+   for(const path of ['filler.designation','filler.standard','filler.diameter_mm']){
      const l=label(path);if(l)fillerSection.append(l);
    }
    const approval=document.createElement('div');approval.className='catalog-approvals';
@@ -129,8 +129,10 @@ function addCatalogs(){
    fillerSection.append(approval);
    for(const e of approval.querySelectorAll('[data-path]')){const v=pathGet(w,e.dataset.path);if(v!=null)e.value=v}
    const diameter=field('filler.diameter_mm');
-   const ds=select('Drahtdurchmesser auswählen',[],'Durchmesser wählen');diameter.closest('label').before(ds.l);
-   ds.e.addEventListener('change',()=>{if(ds.e.value)diameter.value=ds.e.value});
+   // Ein einziges Durchmesserfeld: vorhandenen Wert und freie Eingabe erhalten.
+   const manufacturerInput=field('filler.manufacturer');
+   // Das Originalfeld bleibt als unsichtbarer Datenträger für die bestehende Speicherung.
+   if(manufacturerInput){manufacturerInput.closest('label').style.display='none';}
    const getFamily=()=>{
      const mats=[0,1].map(i=>field(`base_materials.${i}.designation`)?.value||'');
      if(mats.some(x=>!x||x==='Andere'))return 'unknown';
@@ -147,14 +149,12 @@ function addCatalogs(){
      chosen.e.innerHTML='<option value="">'+(getFamily()==='unknown'?'Werkstoffe prüfen / freie Eingabe':'Zusatz auswählen / freie Eingabe')+'</option>'+items.map(x=>`<option value="${x.id}">${esc(x.designation)} · ${esc(x.standard)}</option>`).join('');
      const existing=items.find(x=>x.designation===field('filler.designation')?.value);
      if(existing)chosen.e.value=existing.id;
-     const diameters=existing?.diameters||[0.8,1,1.2,1.6,2,2.4];
-     ds.e.innerHTML='<option value="">Durchmesser wählen</option>'+diameters.map(x=>`<option value="${x}">${String(x).replace('.',',')} mm</option>`).join('');
-     ds.e.value=String(diameter.value);
+     // Keine zweite Durchmesser-Auswahl erzeugen.
    };
    refreshFiller=refresh;
    manufacturers.e.value=w.filler.manufacturer||'';
    if(!Array.from(manufacturers.e.options).some(x=>x.value===manufacturers.e.value))manufacturers.e.value='Andere / frei';
-   manufacturers.e.addEventListener('change',()=>{field('filler.manufacturer').value=manufacturers.e.value;refresh()});
+   manufacturers.e.addEventListener('change',()=>{if(manufacturerInput)manufacturerInput.value=manufacturers.e.value;refresh()});
    chosen.e.addEventListener('change',()=>{
      const item=FILLER_ITEMS.find(x=>x.id===chosen.e.value);if(!item)return;
      set('filler.designation',item.designation);set('filler.standard',item.standard);
