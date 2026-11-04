@@ -1,6 +1,6 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WeldMaster · WPS-Verwaltung</title><link rel="manifest" href="./manifest.webmanifest"><meta name="theme-color" content="#132c49"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="WeldMaster"><link rel="apple-touch-icon" href="./icon-180.png"><style>
 :root{font-family:system-ui,-apple-system,sans-serif;color:#182c43;background:#f2f5f9}*{box-sizing:border-box}body{margin:0}header{background:#132c49;color:white;padding:22px max(18px,calc((100vw - 1040px)/2))}header h1{margin:0;font-size:26px}header p{margin:5px 0 0;color:#cbd7e7}.wrap{max-width:1040px;margin:20px auto;padding:0 16px;display:grid;grid-template-columns:300px 1fr;gap:16px}.panel{background:white;border:1px solid #dbe2ec;border-radius:14px;padding:18px;box-shadow:0 2px 12px #20334a09}h2{font-size:18px;margin:0 0 14px}h3{font-size:15px;margin:22px 0 10px;border-bottom:1px solid #dbe2ec;padding-bottom:8px}button,.filebutton{border:0;border-radius:9px;padding:10px 13px;background:#1d4c83;color:white;font-weight:600;cursor:pointer;font:inherit}button.secondary,.filebutton.secondary{background:#e9eff7;color:#1d426e}button.danger{background:#a52d38}button:disabled{opacity:.5;cursor:not-allowed}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.filebutton{display:inline-block;cursor:pointer}.filebutton input{display:none}.wpsitem{width:100%;text-align:left;background:#f7f9fc;color:#172f4b;border:1px solid #e0e6ef;margin-bottom:9px;display:block}.wpsitem.active{border:2px solid #2864b2;background:#eef5ff}.wpsitem small{display:block;color:#61758a;margin-top:5px}.muted{color:#62768a;font-size:13px}.pill{background:#fff0d8;color:#8a5300;padding:5px 9px;border-radius:30px;font-size:12px}.head{display:flex;justify-content:space-between;align-items:center;gap:8px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{font-size:13px;font-weight:600;display:block}input,select,textarea{display:block;width:100%;border:1px solid #c5d1df;border-radius:8px;padding:10px;margin-top:5px;font:inherit;background:white;color:#172c43}textarea{min-height:65px}fieldset{border:1px solid #dbe2ec;border-radius:10px;margin:12px 0;padding:12px}legend{font-weight:700;font-size:14px}.status{margin-top:10px;color:#245b38;font-size:13px;min-height:18px}.warning{background:#fff6e7;border-left:3px solid #e5a43c;padding:10px;font-size:13px;margin:12px 0}footer{max-width:1040px;margin:12px auto 28px;padding:0 16px;color:#60758a;font-size:12px}@media(max-width:720px){.wrap{display:block}.panel{margin-bottom:15px}.grid{grid-template-columns:1fr}header{padding:18px}}
-.live-drawings{margin:16px 0 22px;padding:14px;border:1px solid #c7d5e4;border-radius:12px;background:#f8fbff}.live-drawings h3{margin:0 0 6px}.live-hint{font-size:12px;color:#52657b;margin:0 0 12px}.live-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.live-drawing{background:white;border:1px solid #d0dce9;border-radius:8px;padding:10px;min-width:0}.live-drawing strong{font-size:13px;display:block;margin-bottom:6px}.live-drawing svg{display:block;width:100%;height:auto;max-height:175px}@media(max-width:650px){.live-grid{grid-template-columns:1fr}} .catalog-title{font-weight:700;font-size:14px;color:#173d60;margin:12px 0 5px}.catalog-approvals{grid-column:1/-1;border:1px solid #d6e0eb;background:#f8fbff;border-radius:10px;padding:12px}.catalog-approvals .grid{margin-top:8px}</style></head><body><header><h1>⚙ WeldMaster</h1><p>WPS-Verwaltung · lokale Speicherung · Entwicklungsversion</p></header><div class="wrap"><aside class="panel"><div class="head"><h2>Meine WPS</h2><span id="count" class="muted"></span></div><div id="list"></div><div class="toolbar"><button onclick="newWps()">+ Neue WPS</button><button class="secondary" onclick="duplicate()">Duplizieren</button></div><div class="toolbar"><label class="filebutton secondary">JSON importieren<input type="file" accept=".json,application/json" onchange="importFile(event)"></label><button class="secondary" onclick="exportAll()">Alle exportieren</button></div><p class="muted">Speicherung erfolgt in diesem Browser auf diesem Gerät. Für Sicherungen regelmäßig JSON exportieren.</p></aside><main class="panel"><div class="head"><h2>WPS bearbeiten</h2><span class="pill">Entwurf / nicht freigegeben</span></div><div id="editor"></div><div class="toolbar"><button onclick="save()">Änderungen speichern</button><button class="secondary" onclick="exportOne()">WPS exportieren</button><button class="danger" onclick="removeWps()">Löschen</button></div><div class="status" id="status" aria-live="polite"></div></main></div><footer>WeldMaster · Kein Cloud-Sync. Daten können bei Löschung der Browserdaten verloren gehen. Keine automatische technische oder normative Freigabe.</footer><script>
+.live-drawings{margin:16px 0 22px;padding:14px;border:1px solid #c7d5e4;border-radius:12px;background:#f8fbff}.live-drawings h3{margin:0 0 6px}.live-hint{font-size:12px;color:#52657b;margin:0 0 12px}.live-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.live-drawing{background:white;border:1px solid #d0dce9;border-radius:8px;padding:10px;min-width:0}.live-drawing strong{font-size:13px;display:block;margin-bottom:6px}.live-drawing svg{display:block;width:100%;height:auto;max-height:175px}@media(max-width:650px){.live-grid{grid-template-columns:1fr}} .catalog-title{font-weight:700;font-size:14px;color:#173d60;margin:12px 0 5px}.catalog-approvals{grid-column:1/-1;border:1px solid #d6e0eb;background:#f8fbff;border-radius:10px;padding:12px}.catalog-approvals .grid{margin-top:8px}.wm-section{margin:18px 0}.wm-material{margin:12px 0;padding:12px;border:1px solid #d2ddea;border-radius:10px}.wm-material-row{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:12px}.wm-thickness{max-width:45%;margin-top:10px}.wm-free-material{margin-top:8px}.wm-section>label{margin:10px 0}.wm-section>label>select{margin-top:6px}@media(max-width:480px){.wm-material-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.wm-thickness{max-width:55%}} </style></head><body><header><h1>⚙ WeldMaster</h1><p>WPS-Verwaltung · lokale Speicherung · Entwicklungsversion</p></header><div class="wrap"><aside class="panel"><div class="head"><h2>Meine WPS</h2><span id="count" class="muted"></span></div><div id="list"></div><div class="toolbar"><button onclick="newWps()">+ Neue WPS</button><button class="secondary" onclick="duplicate()">Duplizieren</button></div><div class="toolbar"><label class="filebutton secondary">JSON importieren<input type="file" accept=".json,application/json" onchange="importFile(event)"></label><button class="secondary" onclick="exportAll()">Alle exportieren</button></div><p class="muted">Speicherung erfolgt in diesem Browser auf diesem Gerät. Für Sicherungen regelmäßig JSON exportieren.</p></aside><main class="panel"><div class="head"><h2>WPS bearbeiten</h2><span class="pill">Entwurf / nicht freigegeben</span></div><div id="editor"></div><div class="toolbar"><button onclick="save()">Änderungen speichern</button><button class="secondary" onclick="exportOne()">WPS exportieren</button><button class="danger" onclick="removeWps()">Löschen</button></div><div class="status" id="status" aria-live="polite"></div></main></div><footer>WeldMaster · Kein Cloud-Sync. Daten können bei Löschung der Browserdaten verloren gehen. Keine automatische technische oder normative Freigabe.</footer><script>
 const seed={"schema_version": "1.0", "app": "WeldMaster", "wps": {"number": "WELD-135-001", "revision": "0", "company": "Weldgod", "author": "Max Mustermann", "status": "Entwurf / nicht freigegeben", "process": {"number": "135", "name": "MAG", "execution": "manuell", "polarity": "DC+", "arc": "Kurzlichtbogen", "position": "PA"}, "joint": {"type": "V-Stumpfnaht", "thickness_mm": 10, "opening_angle_deg": 60, "root_gap_mm": 2, "land_mm": 0, "face_reinforcement_mm": 1.5, "root_reinforcement_mm": 1, "misalignment_mm": 0}, "base_materials": [{"designation": "S355JR", "group": "1.2", "thickness_mm": 10}, {"designation": "S355JR", "group": "1.2", "thickness_mm": 10}], "filler": {"designation": "G 42 4 M21 3Si1", "standard": "EN ISO 14341-A", "diameter_mm": 1.0, "manufacturer": "Capilla"}, "shielding_gas": {"group": "M21", "composition": "82 % Ar / 18 % CO₂", "standard": "DIN EN ISO 14175", "flow_l_min": [10, 15], "nozzle_diameter_mm": 12, "manufacturer": "Linde", "root_shielding": false}, "passes": [{"name": "Wurzellage", "current_A": [110, 140], "voltage_V": [17, 20], "wire_feed_m_min": [3.5, 5.0], "travel_speed_cm_min": [15, 25], "technique": "Strichraupe"}, {"name": "Fülllage", "current_A": [100, 120], "voltage_V": [16, 18], "wire_feed_m_min": [3, 5], "travel_speed_cm_min": [15, 25], "technique": "Pendelraupe"}], "preheat_C": 20, "interpass_max_C": 150, "stickout_mm": 12, "torch_direction": "stechend", "qualification": {"basis": "DIN EN ISO 15610", "evidence_number": "09673.07", "document": "TÜV-Kennblatt", "evidence_status": "nachweis_geprueft", "scope": null, "manual_comparison_documented": true, "notes": ""}}, "document_layout": {"page": "DIN A4", "drawing_1": "Nahtvorbereitung", "drawing_2": "Fertige Schweißnaht", "drawing_size": "klein", "caption_clearance": "separate", "approved_layout_reference": "WeldMaster_WELD-135-001_Rev0_Beschriftung_frei.pdf"}, "review_required": true};
 const KEY='weldmaster-wps-v1';let db,active;
 function clone(x){return JSON.parse(JSON.stringify(x))}
@@ -34,14 +34,7 @@ init();
 // WeldMaster 1.1: PDF via native iPad print-to-PDF; editable geometry, per-device persistence.
 const materialGroups={'S235JR':'1.1','S275JR':'1.1','S355JR':'1.2','S355J2':'1.2','P265GH':'1.1','1.4301':'8.1','1.4571':'8.1'};
 const baseRender=render;
-render=function(){baseRender(); const editor=document.getElementById('editor');
-  editor.querySelectorAll('[data-path$=".designation"]').forEach(el=>{if(!el.dataset.path.startsWith('base_materials.'))return;
-    const idx=el.dataset.path.split('.')[1];const sel=document.createElement('select');sel.innerHTML='<option value="">Werkstoff auswählen</option>'+Object.keys(materialGroups).map(v=>`<option value="${v}">${v}</option>`).join('')+'<option value="Andere">Andere / freie Eingabe</option>';sel.value=materialGroups[el.value]?el.value:'Andere';el.parentNode.insertBefore(sel,el);el.style.marginTop='5px';el.style.display=sel.value==='Andere'?'block':'none';
-    sel.addEventListener('change',()=>{if(sel.value!=='Andere'){el.style.display='none';el.value=sel.value;const group=editor.querySelector(`[data-path="base_materials.${idx}.group"]`);if(group)group.value=materialGroups[sel.value]}else{el.style.display='block';el.value='';el.focus()}});
-    const hint=document.createElement('div');hint.className='material-note';hint.textContent='Werkstoffgruppe wird bei Auswahl automatisch vorgeschlagen; manuell änderbar.';el.parentNode.appendChild(hint);
-  });
-  if(!document.getElementById('printButton')){const bar=document.createElement('div');bar.className='toolbar-extra';bar.innerHTML='<button id="printButton" onclick="showPrint()">📄 DIN-A4-PDF-Vorschau</button><button onclick="exportOne()">💾 JSON-Sicherung</button>';editor.parentNode.insertBefore(bar,editor)}
-};
+render=function(){baseRender();const editor=document.getElementById('editor');if(!document.getElementById('printButton')){const bar=document.createElement('div');bar.className='toolbar-extra';bar.innerHTML='<button id="printButton" onclick="showPrint()">📄 DIN-A4-PDF-Vorschau</button><button onclick="exportOne()">💾 JSON-Sicherung</button>';editor.parentNode.insertBefore(bar,editor)}};
 function fmt(v){return String(v??'–').replace(/\./g,',')}
 function range(v){return Array.isArray(v)?v.map(fmt).join('–'):'–'}
 function val(v){return esc(String(v??'–'))}
@@ -69,21 +62,136 @@ const GAS_CATALOG=[
 {id:'i1',process:['131','141','142'],group:'I1',composition:'100 % Ar',standard:'DIN EN ISO 14175'},
 {id:'i2',process:['131','141','142'],group:'I2',composition:'100 % He',standard:'DIN EN ISO 14175'}
 ];
+
+// Katalogeinträge sind Muster zur Eingabeunterstützung, keine geprüften Produktzulassungen.
+const FILLER_ITEMS=[
+ {id:'mag-g3',families:['steel'],process:['135'],manufacturer:'Capilla',designation:'G 42 4 M21 3Si1',standard:'EN ISO 14341-A',diameters:[0.8,1,1.2,1.6]},
+ {id:'mag-g4',families:['steel'],process:['135'],manufacturer:'Andere / frei',designation:'G 46 4 M21 4Si1',standard:'EN ISO 14341-A',diameters:[0.8,1,1.2]},
+ {id:'tig-steel',families:['steel'],process:['141'],manufacturer:'Andere / frei',designation:'W 42 5 W3Si1',standard:'EN ISO 636-A',diameters:[1.6,2,2.4]},
+ {id:'mag-308l',families:['stainless'],process:['135'],manufacturer:'Andere / frei',designation:'G 19 9 L Si',standard:'EN ISO 14343-A',diameters:[0.8,1,1.2]},
+ {id:'mag-316l',families:['stainless'],process:['135'],manufacturer:'Andere / frei',designation:'G 19 12 3 L Si',standard:'EN ISO 14343-A',diameters:[0.8,1,1.2]},
+ {id:'tig-308l',families:['stainless'],process:['141'],manufacturer:'Andere / frei',designation:'W 19 9 L',standard:'EN ISO 14343-A',diameters:[1.6,2,2.4]},
+ {id:'tig-316l',families:['stainless'],process:['141'],manufacturer:'Andere / frei',designation:'W 19 12 3 L',standard:'EN ISO 14343-A',diameters:[1.6,2,2.4]},
+ {id:'mixed-309',families:['mixed'],process:['135'],manufacturer:'Andere / frei',designation:'G 23 12 L Si',standard:'EN ISO 14343-A',diameters:[0.8,1,1.2]},
+ {id:'mixed-tig',families:['mixed'],process:['141'],manufacturer:'Andere / frei',designation:'W 23 12 L',standard:'EN ISO 14343-A',diameters:[1.6,2,2.4]}
+];
+const GAS_ITEMS=[
+ {id:'linde-m21',manufacturer:'Linde',name:'M21 – 82 % Ar / 18 % CO₂ (Beispiel)',process:['135','136','138'],group:'M21',composition:'82 % Ar / 18 % CO₂'},
+ {id:'linde-i1',manufacturer:'Linde',name:'Argon 4.6 (Beispiel)',process:['131','141','142'],group:'I1',composition:'100 % Ar'},
+ {id:'messer-m21',manufacturer:'Messer',name:'M21 – 82 % Ar / 18 % CO₂ (Beispiel)',process:['135','136','138'],group:'M21',composition:'82 % Ar / 18 % CO₂'},
+ {id:'air-m21',manufacturer:'Air Liquide',name:'M21 – 82 % Ar / 18 % CO₂ (Beispiel)',process:['135','136','138'],group:'M21',composition:'82 % Ar / 18 % CO₂'},
+ {id:'other-m20',manufacturer:'Andere / frei',name:'M20 – 92 % Ar / 8 % CO₂ (Beispiel)',process:['135','136','138'],group:'M20',composition:'92 % Ar / 8 % CO₂'},
+ {id:'other-c1',manufacturer:'Andere / frei',name:'C1 – CO₂',process:['135','136','138'],group:'C1',composition:'100 % CO₂'},
+ {id:'other-i2',manufacturer:'Andere / frei',name:'I2 – Helium',process:['131','141','142'],group:'I2',composition:'100 % He'}
+];
 function addCatalogs(){
  const editor=document.getElementById('editor');if(!editor||!db?.[active])return;
- const w=db[active].wps,proc=w.process.number;
- const fillerInput=editor.querySelector('[data-path="filler.designation"]');
- if(fillerInput){const label=fillerInput.closest('label');const select=document.createElement('select');select.setAttribute('aria-label','Schweißzusatz aus Datenbank auswählen');
- select.innerHTML='<option value="">Schweißzusatz aus Katalog auswählen / freie Eingabe</option>'+FILLER_CATALOG.filter(x=>x.process.includes(proc)).map(x=>`<option value="${x.id}">${esc(x.designation)} · ${esc(x.standard)}</option>`).join('');
- label.before(select);
- const title=document.createElement('div');title.className='catalog-title';title.textContent='Schweißzusatz-Datenbank (Beispieldatensätze)';select.before(title);
- const info=document.createElement('p');info.className='material-note';info.textContent='Normklassifizierung ist keine Produktzulassung. TÜV-/DB-Nummern nur aus geprüftem Hersteller-Nachweis übernehmen.';select.after(info);
- select.addEventListener('change',()=>{const x=FILLER_CATALOG.find(x=>x.id===select.value);if(!x)return;const set=(path,val)=>{const el=editor.querySelector(`[data-path="${path}"]`);if(el)el.value=val};set('filler.designation',x.designation);set('filler.standard',x.standard);const diameter=editor.querySelector('[data-path="filler.diameter_mm"]');if(diameter&&!x.diameters.includes(Number(diameter.value)))diameter.value=x.diameters[0];const opts=editor.querySelector('[aria-label="Drahtdurchmesser auswählen"]');if(opts){opts.innerHTML='<option value="">Durchmesser wählen</option>'+x.diameters.map(n=>`<option value="${n}">${String(n).replace('.',',')} mm</option>`).join('');opts.value=String(diameter.value)}});
- const diameter=editor.querySelector('[data-path="filler.diameter_mm"]');if(diameter){const dselect=document.createElement('select');dselect.setAttribute('aria-label','Drahtdurchmesser auswählen');diameter.before(dselect);const current=FILLER_CATALOG.find(x=>x.designation===w.filler.designation);function updateDiameterOptions(ds){dselect.innerHTML='<option value="">Durchmesser wählen</option>'+ds.map(x=>`<option value="${x}">${String(x).replace('.',',')} mm</option>`).join('');dselect.value=String(diameter.value);};updateDiameterOptions(current?.diameters||[0.8,1,1.2,1.6,2,2.4]);dselect.addEventListener('change',()=>{if(dselect.value)diameter.value=dselect.value})}}
- const gasInput=editor.querySelector('[data-path="shielding_gas.group"]');if(gasInput){const label=gasInput.closest('label');const select=document.createElement('select');select.setAttribute('aria-label','Schutzgas aus Datenbank auswählen');select.innerHTML='<option value="">Schutzgas aus Katalog auswählen / freie Eingabe</option>'+GAS_CATALOG.filter(x=>x.process.includes(proc)).map(x=>`<option value="${x.id}">${x.group} · ${esc(x.composition)}</option>`).join('');label.before(select);const title=document.createElement('div');title.className='catalog-title';title.textContent='Schutzgas-Datenbank (Beispielmischungen)';select.before(title);select.addEventListener('change',()=>{const x=GAS_CATALOG.find(x=>x.id===select.value);if(!x)return;for(const [path,value] of [['shielding_gas.group',x.group],['shielding_gas.composition',x.composition],['shielding_gas.standard',x.standard]]){const el=editor.querySelector(`[data-path="${path}"]`);if(el)el.value=value}})}
- const marker=editor.querySelector('[data-path="filler.manufacturer"]')?.closest('label');if(marker){const box=document.createElement('div');box.className='catalog-approvals';box.innerHTML='<div class="catalog-title">Produktzulassungen / Nachweise</div><div class="grid"><label>TÜV-Zulassungsnummer<input data-path="filler.tuv_approval" placeholder="Nur mit gültigem Nachweis"></label><label>DB-Zulassungskennung<input data-path="filler.db_approval" placeholder="Nur mit gültigem Nachweis"></label><label>Nachweisdatum / gültig bis<input data-path="filler.approval_valid_until" placeholder="JJJJ-MM-TT"></label><label>Nachweisdokument / Quelle<input data-path="filler.approval_document" placeholder="Dokument / Hersteller"></label><label>Nachweisstatus<select data-path="filler.approval_status"><option value="nicht_hinterlegt">Nicht hinterlegt</option><option value="vorhanden">Nachweis vorhanden</option><option value="geprueft">Manuell geprüft</option></select></label></div><p class="material-note">Die App prüft weder Zulassungen noch Gültigkeit automatisch. Angaben sind produkt- und herstellerspezifisch.</p>';marker.after(box);for(const el of box.querySelectorAll('[data-path]')){const v=pathGet(w,el.dataset.path);if(v!=null)el.value=v}}
- const process=editor.querySelector('[data-path="process.number"]');if(process)process.addEventListener('change',()=>{collect();render()});
+ const w=db[active].wps;
+ const field=path=>editor.querySelector(`[data-path="${path}"]`);
+ const label=path=>field(path)?.closest('label');
+ const set=(path,value)=>{const e=field(path);if(e){e.value=value;e.dispatchEvent(new Event('input',{bubbles:true}))}};
+ const select=(title,items,placeholder)=>{const l=document.createElement('label');l.textContent=title;const e=document.createElement('select');e.innerHTML=`<option value="">${esc(placeholder)}</option>`+items.map(x=>`<option value="${esc(x.value)}">${esc(x.label)}</option>`).join('');l.appendChild(e);return {l,e}};
+ const section=(title)=>{const d=document.createElement('section');d.className='wm-section';d.innerHTML=`<h3>${title}</h3>`;return d};
+ // Grundwerkstoffe: eine sichtbare Werkstoffauswahl je Bauteil, daneben Gruppe, darunter Dicke.
+ const first=label('base_materials.0.designation');
+ const materialsSection=section('Grundwerkstoffe');
+ if(first){const grid=first.parentElement;grid.before(materialsSection);for(let i=0;i<2;i++){
+   const d=field(`base_materials.${i}.designation`),g=field(`base_materials.${i}.group`),t=field(`base_materials.${i}.thickness_mm`);
+   if(!d||!g||!t)continue;
+   const block=document.createElement('fieldset');block.className='wm-material';block.innerHTML=`<legend>Grundwerkstoff ${i+1}</legend><div class="wm-material-row"></div><div class="wm-thickness"></div>`;
+   const opts=select('Werkstoff',Object.keys(materialGroups).map(x=>({value:x,label:x})).concat([{value:'Andere',label:'Andere / freie Eingabe'}]),'Werkstoff auswählen');
+   const original=d.closest('label');original.classList.add('wm-free-material');
+   const current=d.value;
+   opts.e.value=Object.hasOwn(materialGroups,current)?current:'Andere';
+   original.style.display=opts.e.value==='Andere'?'block':'none';
+   const groupLabel=g.closest('label'),thickLabel=t.closest('label');
+   block.querySelector('.wm-material-row').append(opts.l,groupLabel);
+   block.querySelector('.wm-thickness').append(thickLabel);
+   block.append(original);
+   materialsSection.append(block);
+   opts.e.addEventListener('change',()=>{const free=opts.e.value==='Andere';original.style.display=free?'block':'none';if(!free){d.value=opts.e.value;g.value=materialGroups[opts.e.value]||''}else{d.value='';g.value=''}refreshFiller();});
+   d.addEventListener('input',refreshFiller);
+ }}
+ // Remove the now empty legacy grid, if it contains no remaining fields.
+ const fillerStart=label('filler.designation');
+ const fillerSection=section('Schweißzusatz');
+ if(fillerStart){fillerStart.parentElement.before(fillerSection);
+   const proc=()=>field('process.number')?.value||w.process.number;
+   const manufacturers=select('Hersteller', ['Capilla','Böhler','Lincoln Electric','ESAB','Andere / frei'].map(x=>({value:x,label:x})), 'Hersteller wählen');
+   const chosen=select('Schweißzusatz aus Katalog',[],'Zusatz auswählen');
+   fillerSection.append(manufacturers.l,chosen.l);
+   const note=document.createElement('p');note.className='material-note';note.textContent='Katalog: Musterklassifizierungen. Hersteller-Zuordnung und Produktzulassungen müssen anhand des konkreten Produkts geprüft werden.';fillerSection.append(note);
+   for(const path of ['filler.designation','filler.standard','filler.diameter_mm','filler.manufacturer']){
+     const l=label(path);if(l)fillerSection.append(l);
+   }
+   const approval=document.createElement('div');approval.className='catalog-approvals';
+   approval.innerHTML='<div class="catalog-title">TÜV- / DB-Nachweise (produktbezogen)</div><div class="grid"><label>TÜV-Zulassungsnummer<input data-path="filler.tuv_approval"></label><label>DB-Zulassungskennung<input data-path="filler.db_approval"></label><label>Gültig bis<input data-path="filler.approval_valid_until" placeholder="JJJJ-MM-TT"></label><label>Nachweisdokument<input data-path="filler.approval_document"></label><label>Prüfstatus<select data-path="filler.approval_status"><option value="nicht_hinterlegt">Nicht hinterlegt</option><option value="vorhanden">Nachweis vorhanden</option><option value="geprueft">Manuell geprüft</option></select></label></div>';
+   fillerSection.append(approval);
+   for(const e of approval.querySelectorAll('[data-path]')){const v=pathGet(w,e.dataset.path);if(v!=null)e.value=v}
+   const diameter=field('filler.diameter_mm');
+   const ds=select('Drahtdurchmesser auswählen',[],'Durchmesser wählen');diameter.closest('label').before(ds.l);
+   ds.e.addEventListener('change',()=>{if(ds.e.value)diameter.value=ds.e.value});
+   const getFamily=()=>{
+     const mats=[0,1].map(i=>field(`base_materials.${i}.designation`)?.value||'');
+     if(mats.some(x=>!x||x==='Andere'))return 'unknown';
+     const stainless=mats.map(x=>['1.4301','1.4571'].includes(x));
+     return stainless.every(Boolean)?'stainless':stainless.some(Boolean)?'mixed':'steel';
+   };
+   const fillList=()=>{
+     const family=getFamily();
+     const maker=manufacturers.e.value;
+     return FILLER_ITEMS.filter(x=>x.process.includes(proc())&&x.families.includes(family)&&(!maker||maker==='Andere / frei'||x.manufacturer===maker));
+   };
+   const refresh=()=>{
+     const items=fillList();
+     chosen.e.innerHTML='<option value="">'+(getFamily()==='unknown'?'Werkstoffe prüfen / freie Eingabe':'Zusatz auswählen / freie Eingabe')+'</option>'+items.map(x=>`<option value="${x.id}">${esc(x.designation)} · ${esc(x.standard)}</option>`).join('');
+     const existing=items.find(x=>x.designation===field('filler.designation')?.value);
+     if(existing)chosen.e.value=existing.id;
+     const diameters=existing?.diameters||[0.8,1,1.2,1.6,2,2.4];
+     ds.e.innerHTML='<option value="">Durchmesser wählen</option>'+diameters.map(x=>`<option value="${x}">${String(x).replace('.',',')} mm</option>`).join('');
+     ds.e.value=String(diameter.value);
+   };
+   refreshFiller=refresh;
+   manufacturers.e.value=w.filler.manufacturer||'';
+   if(!Array.from(manufacturers.e.options).some(x=>x.value===manufacturers.e.value))manufacturers.e.value='Andere / frei';
+   manufacturers.e.addEventListener('change',()=>{field('filler.manufacturer').value=manufacturers.e.value;refresh()});
+   chosen.e.addEventListener('change',()=>{
+     const item=FILLER_ITEMS.find(x=>x.id===chosen.e.value);if(!item)return;
+     set('filler.designation',item.designation);set('filler.standard',item.standard);
+     const current=Number(diameter.value);if(!item.diameters.includes(current))diameter.value=item.diameters[0];
+     // Zulassungsangaben sind nie von einer Klassifizierung auf ein anderes Produkt übertragbar.
+     for(const key of ['tuv_approval','db_approval','approval_valid_until','approval_document'])set('filler.'+key,'');
+     set('filler.approval_status','nicht_hinterlegt');refresh();
+   });
+   refresh();
+ }
+ // Schutzgas: Hersteller -> Produkt/Gas -> Gruppe -> Zusammensetzung.
+ const gasSection=section('Schutzgas');
+ const gasStart=label('shielding_gas.group');
+ if(gasStart){gasStart.parentElement.before(gasSection);
+   const makers=select('Gashersteller',['Linde','Messer','Air Liquide','Andere / frei'].map(x=>({value:x,label:x})),'Hersteller wählen');
+   const gases=select('Gas / Handelsname',[],'Gas auswählen');
+   gasSection.append(makers.l,gases.l);
+   for(const path of ['shielding_gas.manufacturer','shielding_gas.group','shielding_gas.composition','shielding_gas.standard','shielding_gas.nozzle_diameter_mm']){
+     const l=label(path);if(l)gasSection.append(l);
+   }
+   makers.e.value=w.shielding_gas.manufacturer||'';
+   if(!Array.from(makers.e.options).some(x=>x.value===makers.e.value))makers.e.value='Andere / frei';
+   const refreshGas=()=>{
+     const list=GAS_ITEMS.filter(x=>x.process.includes(field('process.number')?.value||w.process.number)&&(!makers.e.value||makers.e.value==='Andere / frei'||x.manufacturer===makers.e.value));
+     gases.e.innerHTML='<option value="">Gas auswählen / freie Eingabe</option>'+list.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
+     const existing=list.find(x=>x.group===field('shielding_gas.group')?.value&&x.composition===field('shielding_gas.composition')?.value);
+     if(existing)gases.e.value=existing.id;
+   };
+   makers.e.addEventListener('change',()=>{field('shielding_gas.manufacturer').value=makers.e.value;refreshGas()});
+   gases.e.addEventListener('change',()=>{const x=GAS_ITEMS.find(x=>x.id===gases.e.value);if(!x)return;set('shielding_gas.group',x.group);set('shielding_gas.composition',x.composition);set('shielding_gas.standard','DIN EN ISO 14175')});
+   refreshGas();
+   gasSection.append(document.createTextNode('Gasdurchfluss (l/min) wird im nachfolgenden Feld erfasst.'));
+ }
+ // Bei Verfahrenswechsel Eingaben übernehmen und neue Kataloge aufbauen.
+ field('process.number')?.addEventListener('change',()=>{collect();render()});
 }
+let refreshFiller=()=>{};
 
 function statusLabel(value){const labels={nachweis_geprueft:'Nachweis geprüft',pending:'Ausstehend',in_pruefung:'In Prüfung'};return labels[value]||value||'Nicht angegeben'}
 function showPrint(){collect();const w=db[active].wps;const j=w.joint;const material=w.base_materials;const row=(a,b,c,d)=>`<tr><th>${val(a)}</th><td>${val(b)}</td><th>${val(c)}</th><td>${val(d)}</td></tr>`;
