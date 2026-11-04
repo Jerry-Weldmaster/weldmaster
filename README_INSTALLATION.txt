@@ -1,3 +1,1 @@
-WeldMaster 1.4: Live-Nahtskizzen im Editor wiederhergestellt.
-Vor Update WPS als JSON sichern. Alle Dateien im GitHub-Repository im Hauptverzeichnis ersetzen. Keine WPS-JSON-Dateien hochladen.
-Nach GitHub Pages Deployment App neu starten. Lokale Daten bleiben bei gleicher Adresse normalerweise erhalten.
+WeldMaster 1.6 – Sammelupdate. Vor dem Update WPS als JSON exportieren. Dateien aus dem ZIP direkt im GitHub-Repository ersetzen, Änderungen committen, Deployment abwarten, App neu öffnen. Lokaler Speicher-Schlüssel unverändert. Katalogdaten sind Beispiele; TÜV/DB Zulassungen werden NICHT automatisch verifiziert. Nahtzeichnungen derzeit nur für V-Stumpfnaht.
