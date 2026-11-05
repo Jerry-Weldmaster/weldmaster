@@ -1,4 +1,5 @@
-WeldMaster 2.3
-Vor Installation unbedingt Alle exportieren (JSON). Alle sieben Dateien ins bestehende GitHub-Pages-Repository hochladen, bestehende ersetzen, Commit changes. Browserdaten nicht löschen.
-Änderungen: Grundwerkstoffe vor Nahtangaben, WIG 141/142 deaktiviert Lichtbogenart und zeigt sie nicht in der PDF, I-Naht Winkel 0° gesperrt, getrennte Kehlnaht-Bauteile, leere Eingabefelder bleiben in der PDF leer.
-WPS bleibt Entwurf, Zeichnungen sind schematisch. Firmenlogo ist separat lokal gespeichert und nicht im WPS-JSON enthalten.
+WeldMaster PWA v2.4
+
+Alle Dateien ins Hauptverzeichnis des GitHub-Pages-Repositories hochladen.
+Vorher WPS-Daten als JSON sichern. Safari-Websitedaten nicht löschen.
+Neu: Rohr-Durchmesser vor Wandstärke, keine doppelte Blechdicke, Kalender-Datum bei Nachweisen, eine Startlage, nummerierte Lagen mit wählbarer Lagenart, kein Drahtvorschub bei WIG und kein Stickout.
