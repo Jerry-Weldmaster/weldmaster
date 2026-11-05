@@ -1,2 +1,4 @@
-WeldMaster 2.0
-Vor dem Update alle WPS als JSON exportieren. Alle 7 Dateien in das Hauptverzeichnis des bestehenden GitHub-Pages-Repositories hochladen. Die Browserdaten nicht löschen. Das Firmenlogo wird separat im lokalen Speicher gehalten und ist nicht im WPS-JSON enthalten. Die PDF-Ausgabe bleibt weiß. Kehlnaht-Skizzen verwenden zwei unabhängig eingegebene Blechdicken.
+WeldMaster 2.1
+Vor dem Update alle WPS als JSON exportieren. Die sieben Dateien in das bestehende GitHub-Pages-Repository hochladen und ersetzen. Browserdaten nicht löschen.
+Neu: sichtbare Firmeneinstellungen, Blech/Rohr je Werkstoff mit Wandstärke, BW/FW und Nahtform, Art der Nahtvorbereitung, transparente orange Naht und schematischer Einbrand, PDF-Felder.
+Logo bleibt separat lokal gespeichert und ist nicht im JSON enthalten. Zeichnungen schematisch und nicht maßstäblich. WPS nicht automatisch freigegeben.
