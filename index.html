@@ -1,6 +1,39 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WeldMaster · WPS-Verwaltung</title><link rel="manifest" href="./manifest.webmanifest"><meta name="theme-color" content="#132c49"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="WeldMaster"><link rel="apple-touch-icon" href="./icon-180.png"><style>
 :root{font-family:system-ui,-apple-system,sans-serif;color:#182c43;background:#f2f5f9}*{box-sizing:border-box}body{margin:0}header{background:#132c49;color:white;padding:22px max(18px,calc((100vw - 1040px)/2))}header h1{margin:0;font-size:26px}header p{margin:5px 0 0;color:#cbd7e7}.wrap{max-width:1040px;margin:20px auto;padding:0 16px;display:grid;grid-template-columns:300px 1fr;gap:16px}.panel{background:white;border:1px solid #dbe2ec;border-radius:14px;padding:18px;box-shadow:0 2px 12px #20334a09}h2{font-size:18px;margin:0 0 14px}h3{font-size:15px;margin:22px 0 10px;border-bottom:1px solid #dbe2ec;padding-bottom:8px}button,.filebutton{border:0;border-radius:9px;padding:10px 13px;background:#1d4c83;color:white;font-weight:600;cursor:pointer;font:inherit}button.secondary,.filebutton.secondary{background:#e9eff7;color:#1d426e}button.danger{background:#a52d38}button:disabled{opacity:.5;cursor:not-allowed}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.filebutton{display:inline-block;cursor:pointer}.filebutton input{display:none}.wpsitem{width:100%;text-align:left;background:#f7f9fc;color:#172f4b;border:1px solid #e0e6ef;margin-bottom:9px;display:block}.wpsitem.active{border:2px solid #2864b2;background:#eef5ff}.wpsitem small{display:block;color:#61758a;margin-top:5px}.muted{color:#62768a;font-size:13px}.pill{background:#fff0d8;color:#8a5300;padding:5px 9px;border-radius:30px;font-size:12px}.head{display:flex;justify-content:space-between;align-items:center;gap:8px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{font-size:13px;font-weight:600;display:block}input,select,textarea{display:block;width:100%;border:1px solid #c5d1df;border-radius:8px;padding:10px;margin-top:5px;font:inherit;background:white;color:#172c43}textarea{min-height:65px}fieldset{border:1px solid #dbe2ec;border-radius:10px;margin:12px 0;padding:12px}legend{font-weight:700;font-size:14px}.status{margin-top:10px;color:#245b38;font-size:13px;min-height:18px}.warning{background:#fff6e7;border-left:3px solid #e5a43c;padding:10px;font-size:13px;margin:12px 0}footer{max-width:1040px;margin:12px auto 28px;padding:0 16px;color:#60758a;font-size:12px}@media(max-width:720px){.wrap{display:block}.panel{margin-bottom:15px}.grid{grid-template-columns:1fr}header{padding:18px}}
-.live-drawings{margin:16px 0 22px;padding:14px;border:1px solid #c7d5e4;border-radius:12px;background:#f8fbff}.live-drawings h3{margin:0 0 6px}.live-hint{font-size:12px;color:#52657b;margin:0 0 12px}.live-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.live-drawing{background:white;border:1px solid #d0dce9;border-radius:8px;padding:10px;min-width:0}.live-drawing strong{font-size:13px;display:block;margin-bottom:6px}.live-drawing svg{display:block;width:100%;height:auto;max-height:175px}@media(max-width:650px){.live-grid{grid-template-columns:1fr}} .catalog-title{font-weight:700;font-size:14px;color:#173d60;margin:12px 0 5px}.catalog-approvals{grid-column:1/-1;border:1px solid #d6e0eb;background:#f8fbff;border-radius:10px;padding:12px}.catalog-approvals .grid{margin-top:8px}.wm-section{margin:18px 0}.wm-material{margin:12px 0;padding:12px;border:1px solid #d2ddea;border-radius:10px}.wm-material-row{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:12px}.wm-thickness{max-width:45%;margin-top:10px}.wm-free-material{margin-top:8px}.wm-section>label{margin:10px 0}.wm-section>label>select{margin-top:6px}@media(max-width:480px){.wm-material-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.wm-thickness{max-width:55%}} </style></head><body><header><h1>⚙ WeldMaster</h1><p>WPS-Verwaltung · lokale Speicherung · Entwicklungsversion</p></header><div class="wrap"><aside class="panel"><div class="head"><h2>Meine WPS</h2><span id="count" class="muted"></span></div><div id="list"></div><div class="toolbar"><button onclick="newWps()">+ Neue WPS</button><button class="secondary" onclick="duplicate()">Duplizieren</button></div><div class="toolbar"><label class="filebutton secondary">JSON importieren<input type="file" accept=".json,application/json" onchange="importFile(event)"></label><button class="secondary" onclick="exportAll()">Alle exportieren</button></div><p class="muted">Speicherung erfolgt in diesem Browser auf diesem Gerät. Für Sicherungen regelmäßig JSON exportieren.</p></aside><main class="panel"><div class="head"><h2>WPS bearbeiten</h2><span class="pill">Entwurf / nicht freigegeben</span></div><div id="editor"></div><div class="toolbar"><button onclick="save()">Änderungen speichern</button><button class="secondary" onclick="exportOne()">WPS exportieren</button><button class="danger" onclick="removeWps()">Löschen</button></div><div class="status" id="status" aria-live="polite"></div></main></div><footer>WeldMaster · Kein Cloud-Sync. Daten können bei Löschung der Browserdaten verloren gehen. Keine automatische technische oder normative Freigabe.</footer><script>
+.live-drawings{margin:16px 0 22px;padding:14px;border:1px solid #c7d5e4;border-radius:12px;background:#f8fbff}.live-drawings h3{margin:0 0 6px}.live-hint{font-size:12px;color:#52657b;margin:0 0 12px}.live-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.live-drawing{background:white;border:1px solid #d0dce9;border-radius:8px;padding:10px;min-width:0}.live-drawing strong{font-size:13px;display:block;margin-bottom:6px}.live-drawing svg{display:block;width:100%;height:auto;max-height:175px}@media(max-width:650px){.live-grid{grid-template-columns:1fr}} .catalog-title{font-weight:700;font-size:14px;color:#173d60;margin:12px 0 5px}.catalog-approvals{grid-column:1/-1;border:1px solid #d6e0eb;background:#f8fbff;border-radius:10px;padding:12px}.catalog-approvals .grid{margin-top:8px}.wm-section{margin:18px 0}.wm-material{margin:12px 0;padding:12px;border:1px solid #d2ddea;border-radius:10px}.wm-material-row{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:12px}.wm-thickness{max-width:45%;margin-top:10px}.wm-free-material{margin-top:8px}.wm-section>label{margin:10px 0}.wm-section>label>select{margin-top:6px}@media(max-width:480px){.wm-material-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.wm-thickness{max-width:55%}} 
+
+:root{color-scheme:light}
+html[data-theme="dark"]{color-scheme:dark;background:#101820;color:#e8f1fa}
+html[data-theme="dark"] body{background:#101820;color:#e8f1fa}
+html[data-theme="dark"] header{background:#0b131c}
+html[data-theme="dark"] .panel{background:#1b2733;border-color:#36485a;box-shadow:none}
+html[data-theme="dark"] h3{border-color:#394d60}
+html[data-theme="dark"] .wpsitem{background:#263747;color:#eaf3fc;border-color:#43576a}
+html[data-theme="dark"] .wpsitem.active{background:#193c59;border-color:#6ac0ff}
+html[data-theme="dark"] .wpsitem small,html[data-theme="dark"] .muted,html[data-theme="dark"] footer{color:#adbdcf}
+html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{background:#2a3a49;color:#fff;border-color:#52697e}
+html[data-theme="dark"] button.secondary,html[data-theme="dark"] .filebutton.secondary{background:#314b64;color:#e9f6ff}
+html[data-theme="dark"] fieldset,html[data-theme="dark"] .wm-material{border-color:#43576a}
+html[data-theme="dark"] .live-drawings,html[data-theme="dark"] .catalog-approvals{background:#223140;border-color:#42566b}
+html[data-theme="dark"] .live-drawing{background:#2b3d4e;border-color:#4d657b}
+html[data-theme="dark"] .live-hint,html[data-theme="dark"] .material-note{color:#c1d0df}
+html[data-theme="dark"] .catalog-title{color:#7ccaff}
+html[data-theme="dark"] .warning{background:#483b29;color:#ffdfa5}
+html[data-theme="dark"] .status{color:#9de1b5}
+html[data-theme="dark"] .print-modal{background:#0a111cdb}
+html[data-theme="dark"] .print-sheet{background:#fff;color:#152a41}
+html[data-theme="dark"] .print-sheet h2{color:#fff}
+html[data-theme="dark"] .print-sheet th{color:#152a41}
+html[data-theme="dark"] .print-controls button{background:#fff;color:#183c61}
+.wm-settings{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
+.wm-settings label{display:flex;align-items:center;gap:8px}
+.wm-settings select{width:auto;margin:0}
+.wm-logo-preview{max-width:155px;max-height:65px;object-fit:contain;background:white;border-radius:5px;padding:4px}
+.wm-print-head{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:54px}
+.wm-print-head img{max-width:155px;max-height:52px;object-fit:contain}
+.wm-print-head .wm-print-title{text-align:right;flex:1}
+@media print{html[data-theme="dark"]{color-scheme:light!important}body{background:#fff!important}}
+</style></head><body><header><h1>⚙ WeldMaster</h1><p>WPS-Verwaltung · lokale Speicherung · Entwicklungsversion</p></header><div class="wrap"><aside class="panel"><div class="head"><h2>Meine WPS</h2><span id="count" class="muted"></span></div><details><summary>⚙ Darstellung & Firmenlogo</summary><div class="wm-settings"><label>Design <select id="wmTheme" onchange="setWmTheme(this.value)"><option value="dark">Dunkel</option><option value="light">Hell</option><option value="auto">Automatisch</option></select></label><label>Firmenlogo <input id="wmLogoInput" type="file" accept="image/png,image/jpeg,image/webp" onchange="uploadWmLogo(event)"></label><button class="secondary" onclick="removeWmLogo()">Logo entfernen</button><img id="wmLogoPreview" class="wm-logo-preview" alt="Firmenlogo" hidden></div><p class="muted">Das Logo wird nur auf diesem Gerät gespeichert. Für die Datensicherung separat aufbewahren.</p></details><div id="list"></div><div class="toolbar"><button onclick="newWps()">+ Neue WPS</button><button class="secondary" onclick="duplicate()">Duplizieren</button></div><div class="toolbar"><label class="filebutton secondary">JSON importieren<input type="file" accept=".json,application/json" onchange="importFile(event)"></label><button class="secondary" onclick="exportAll()">Alle exportieren</button></div><p class="muted">Speicherung erfolgt in diesem Browser auf diesem Gerät. Für Sicherungen regelmäßig JSON exportieren.</p></aside><main class="panel"><div class="head"><h2>WPS bearbeiten</h2><span class="pill">Entwurf / nicht freigegeben</span></div><div id="editor"></div><div class="toolbar"><button onclick="save()">Änderungen speichern</button><button class="secondary" onclick="exportOne()">WPS exportieren</button><button class="danger" onclick="removeWps()">Löschen</button></div><div class="status" id="status" aria-live="polite"></div></main></div><footer>WeldMaster · Kein Cloud-Sync. Daten können bei Löschung der Browserdaten verloren gehen. Keine automatische technische oder normative Freigabe.</footer><script>
 const seed={"schema_version": "1.0", "app": "WeldMaster", "wps": {"number": "WELD-135-001", "revision": "0", "company": "Weldgod", "author": "Max Mustermann", "status": "Entwurf / nicht freigegeben", "process": {"number": "135", "name": "MAG", "execution": "manuell", "polarity": "DC+", "arc": "Kurzlichtbogen", "position": "PA"}, "joint": {"type": "V-Stumpfnaht", "thickness_mm": 10, "opening_angle_deg": 60, "root_gap_mm": 2, "land_mm": 0, "face_reinforcement_mm": 1.5, "root_reinforcement_mm": 1, "misalignment_mm": 0}, "base_materials": [{"designation": "S355JR", "group": "1.2", "thickness_mm": 10}, {"designation": "S355JR", "group": "1.2", "thickness_mm": 10}], "filler": {"designation": "G 42 4 M21 3Si1", "standard": "EN ISO 14341-A", "diameter_mm": 1.0, "manufacturer": "Capilla"}, "shielding_gas": {"group": "M21", "composition": "82 % Ar / 18 % CO₂", "standard": "DIN EN ISO 14175", "flow_l_min": [10, 15], "nozzle_diameter_mm": 12, "manufacturer": "Linde", "root_shielding": false}, "passes": [{"name": "Wurzellage", "current_A": [110, 140], "voltage_V": [17, 20], "wire_feed_m_min": [3.5, 5.0], "travel_speed_cm_min": [15, 25], "technique": "Strichraupe"}, {"name": "Fülllage", "current_A": [100, 120], "voltage_V": [16, 18], "wire_feed_m_min": [3, 5], "travel_speed_cm_min": [15, 25], "technique": "Pendelraupe"}], "preheat_C": 20, "interpass_max_C": 150, "stickout_mm": 12, "torch_direction": "stechend", "qualification": {"basis": "DIN EN ISO 15610", "evidence_number": "09673.07", "document": "TÜV-Kennblatt", "evidence_status": "nachweis_geprueft", "scope": null, "manual_comparison_documented": true, "notes": ""}}, "document_layout": {"page": "DIN A4", "drawing_1": "Nahtvorbereitung", "drawing_2": "Fertige Schweißnaht", "drawing_size": "klein", "caption_clearance": "separate", "approved_layout_reference": "WeldMaster_WELD-135-001_Rev0_Beschriftung_frei.pdf"}, "review_required": true};
 const KEY='weldmaster-wps-v1';let db,active;
 function clone(x){return JSON.parse(JSON.stringify(x))}
@@ -43,9 +76,12 @@ function otherDiagram(j,finished){
  const c=150,y=94,sc=Math.min(6,65/t),top=y-t*sc,half=g*sc/2,edge=Math.min(58,Math.max(4,(t-land)*sc*Math.tan(a*Math.PI/360))),weldColor='#e79c4b';
  let metal='',weld='',caption='';
  if(type==='Kehlnaht'){
-   metal=`<path d="M35 28 H91 V${y} H265 V${y+18} H35 Z" fill="#b6c2cd" stroke="#60758a"/><path d="M35 28 H91 V${y} H35 Z" fill="#b6c2cd" stroke="#60758a"/>`;
-   weld=`<path d="M91 ${y-43} Q98 ${y-12} 136 ${y} L91 ${y} Z" fill="${weldColor}" stroke="#995b23"/>`;
-   caption='Kehlnaht · Eckstoß (schematisch)';
+   const t1=Math.max(1,Number(j.material1_mm)||t),t2=Math.max(1,Number(j.material2_mm)||t);
+   const scale=Math.min(5,58/Math.max(t1,t2)),th1=Math.max(5,t1*scale),th2=Math.max(5,t2*scale);
+   const cornerX=94,cornerY=95;
+   metal=`<path d="M30 ${cornerY} H${cornerX} V${cornerY-62} H${cornerX+th2} V${cornerY} H265 V${cornerY+th1} H30 Z" fill="#b6c2cd" stroke="#60758a"/>`;
+   weld=`<path d="M${cornerX+th2} ${cornerY-42} Q${cornerX+th2+3} ${cornerY-10} ${cornerX+th2+44} ${cornerY} L${cornerX+th2} ${cornerY} Z" fill="${weldColor}" stroke="#995b23"/>`;
+   caption='Blech 1: '+fmt(t1)+' mm · Blech 2: '+fmt(t2)+' mm';
  }else{
    let upper=0,lower=0;
    if(type==='Y-Stumpfnaht')upper=edge;
@@ -232,9 +268,9 @@ function addCatalogs(){
 let refreshFiller=()=>{};
 
 function statusLabel(value){const labels={nachweis_geprueft:'Nachweis geprüft',pending:'Ausstehend',in_pruefung:'In Prüfung'};return labels[value]||value||'Nicht angegeben'}
-function showPrint(){collect();const w=db[active].wps;const j=w.joint;const material=w.base_materials;const row=(a,b,c,d)=>`<tr><th>${val(a)}</th><td>${val(b)}</td><th>${val(c)}</th><td>${val(d)}</td></tr>`;
+function showPrint(){collect();const w=db[active].wps;const j={...w.joint,material1_mm:w.base_materials[0].thickness_mm,material2_mm:w.base_materials[1].thickness_mm};const material=w.base_materials;const row=(a,b,c,d)=>`<tr><th>${val(a)}</th><td>${val(b)}</td><th>${val(c)}</th><td>${val(d)}</td></tr>`;
  const passes=w.passes.map((p,i)=>`<tr><td>${i+1}. ${val(p.name)}</td><td>${range(p.current_A)}</td><td>${range(p.voltage_V)}</td><td>${range(p.wire_feed_m_min)}</td><td>${range(p.travel_speed_cm_min)}</td><td>${val(p.technique)}</td></tr>`).join('');
- document.getElementById('printSheet').innerHTML=`<h1>WeldMaster · Schweißanweisung (WPS)</h1><div style="font-size:10px;margin-top:5px">${val(w.company)} · WPS ${val(w.number)} · Revision ${val(w.revision)} · <b>ENTWURF / NICHT FREIGEGEBEN</b></div>
+ document.getElementById('printSheet').innerHTML=`<div class="wm-print-head"><div id="wmPrintLogo"></div><div class="wm-print-title"><h1>Schweißanweisung (WPS)</h1><div>WeldMaster</div></div></div><div style="font-size:10px;margin-top:5px">${val(w.company)} · WPS ${val(w.number)} · Revision ${val(w.revision)} · <b>ENTWURF / NICHT FREIGEGEBEN</b></div>
  <h2>Allgemeine Angaben / Verfahren</h2><table>${row('Ersteller',w.author,'Position',w.process.position)}${row('Verfahren',w.process.number+' '+(PROCESS_NAMES[w.process.number]||w.process.name||''),'Ausführung',w.process.execution)}${row('Polung',w.process.polarity,'Lichtbogen',w.process.arc)}</table>
  <h2>Grundwerkstoffe / Schweißzusatz</h2><table>${row('Werkstoff 1',material[0].designation+' / Gr. '+material[0].group+' / '+fmt(material[0].thickness_mm)+' mm','Werkstoff 2',material[1].designation+' / Gr. '+material[1].group+' / '+fmt(material[1].thickness_mm)+' mm')}${row('Zusatz',w.filler.designation,'Norm',w.filler.standard)}${row('Draht', 'Ø '+fmt(w.filler.diameter_mm)+' mm','Hersteller',w.filler.manufacturer)}${(w.filler.tuv_approval||w.filler.db_approval)?row('TÜV-Zulassung',w.filler.tuv_approval||'Nicht hinterlegt','DB-Kennung',w.filler.db_approval||'Nicht hinterlegt'):''}</table>
  <h2>Schutzgas / Bedingungen</h2><table>${row('Schutzgas',w.shielding_gas.group+' · '+w.shielding_gas.composition,'Durchfluss',range(w.shielding_gas.flow_l_min)+' l/min')}${row('Gasdüse','Ø '+fmt(w.shielding_gas.nozzle_diameter_mm)+' mm','Hersteller',w.shielding_gas.manufacturer)}${row('Vorwärmen',fmt(w.preheat_C)+' °C','Zwischenlage max.',fmt(w.interpass_max_C)+' °C')}${row('Stickout',fmt(w.stickout_mm)+' mm','Brennerführung',w.torch_direction)}</table>
@@ -243,7 +279,7 @@ function showPrint(){collect();const w=db[active].wps;const j=w.joint;const mate
  <h2>Schweißparameter</h2><table><tr><th>Lage</th><th>A</th><th>V</th><th>m/min</th><th>cm/min</th><th>Raupenführung</th></tr>${passes}</table>
  <h2>Qualifizierung / Nachweis</h2><table>${row('Grundlage',w.qualification.basis,'Nachweis',w.qualification.evidence_number)}${row('Dokument',w.qualification.document,'Prüfstatus',statusLabel(w.qualification.evidence_status))}${row('Geltungsbereich',w.qualification.scope||'Nicht eingetragen','WPS-Status','Nicht freigegeben')}</table>
  <div class="foot">Schematische Nahtzeichnungen, nicht maßstäblich. Schweißparameter und Qualifizierungsumfang sind vor Anwendung fachlich zu prüfen. Entwurf / nicht freigegeben.</div>`;
- document.getElementById('previewArea').style.display='block';window.scrollTo(0,0)
+ const logo=loadWmLogo();document.getElementById('wmPrintLogo').innerHTML=logo?`<img src="${logo}" alt="Firmenlogo">`:'';document.getElementById('previewArea').style.display='block';window.scrollTo(0,0)
 }
 
 // Live-Skizzen direkt im Editor, ohne Speichern oder Neuzeichnen der Eingabefelder.
@@ -261,17 +297,43 @@ render=function(){
   heading.before(panel);
   const refresh=()=>{
     const w=db[active].wps;
-    const j={...w.joint};
+    const j={...w.joint,material1_mm:w.base_materials[0].thickness_mm,material2_mm:w.base_materials[1].thickness_mm};
     for(const [path,key] of [['joint.type','type'],['joint.thickness_mm','thickness_mm'],['joint.opening_angle_deg','opening_angle_deg'],['joint.root_gap_mm','root_gap_mm'],['joint.land_mm','land_mm'],['joint.face_reinforcement_mm','face_reinforcement_mm'],['joint.root_reinforcement_mm','root_reinforcement_mm']]){
       const field=editor.querySelector(`[data-path="${path}"]`);
       if(field)j[key]=field.type==='number'?Number(field.value):field.value;
     }
+    for(let i=0;i<2;i++){const f=editor.querySelector(`[data-path="base_materials.${i}.thickness_mm"]`);if(f)j['material'+(i+1)+'_mm']=Number(f.value)||10;}
     document.getElementById('livePrep').innerHTML=diagram(j,false);
     document.getElementById('liveFinished').innerHTML=diagram(j,true);
   };
-  editor.querySelectorAll('[data-path^="joint."]').forEach(el=>{el.addEventListener('input',refresh);el.addEventListener('change',refresh)});
+  editor.querySelectorAll('[data-path^="joint."], [data-path^="base_materials."][data-path$="thickness_mm"]').forEach(el=>{el.addEventListener('input',refresh);el.addEventListener('change',refresh)});
   refresh();
 };
+
+const WM_THEME_KEY='weldmaster-ui-theme-v2',WM_LOGO_KEY='weldmaster-company-logo-v2';
+function loadWmLogo(){try{return localStorage.getItem(WM_LOGO_KEY)||''}catch(e){return ''}}
+function setWmTheme(theme){
+ try{localStorage.setItem(WM_THEME_KEY,theme)}catch(e){}
+ applyWmTheme(theme);
+}
+function applyWmTheme(theme){
+ const dark=theme==='dark'||(theme==='auto'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+ document.documentElement.dataset.theme=dark?'dark':'light';
+ const sel=document.getElementById('wmTheme');if(sel)sel.value=theme;
+}
+function refreshWmLogo(){const img=document.getElementById('wmLogoPreview'),logo=loadWmLogo();if(img){img.hidden=!logo;if(logo)img.src=logo;else img.removeAttribute('src')}}
+function uploadWmLogo(event){
+ const file=event.target.files?.[0];if(!file)return;
+ if(!['image/png','image/jpeg','image/webp'].includes(file.type)){alert('Bitte PNG, JPG oder WebP auswählen.');return}
+ if(file.size>2*1024*1024){alert('Logo maximal 2 MB.');return}
+ const reader=new FileReader();
+ reader.onload=()=>{try{localStorage.setItem(WM_LOGO_KEY,reader.result);refreshWmLogo()}catch(e){alert('Logo konnte nicht lokal gespeichert werden. Bitte eine kleinere Datei verwenden.')}};
+ reader.readAsDataURL(file);
+}
+function removeWmLogo(){try{localStorage.removeItem(WM_LOGO_KEY)}catch(e){}refreshWmLogo()}
+applyWmTheme((()=>{try{return localStorage.getItem(WM_THEME_KEY)||'dark'}catch(e){return 'dark'}})());
+if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{const theme=localStorage.getItem(WM_THEME_KEY)||'dark';if(theme==='auto')applyWmTheme(theme)})}
+refreshWmLogo();
 render();
 </script><script>
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
