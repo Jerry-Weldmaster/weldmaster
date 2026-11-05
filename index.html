@@ -38,7 +38,29 @@ render=function(){baseRender();const editor=document.getElementById('editor');if
 function fmt(v){return String(v??'–').replace(/\./g,',')}
 function range(v){return Array.isArray(v)?v.map(fmt).join('–'):'–'}
 function val(v){return esc(String(v??'–'))}
-function diagram(j,finished){let t=Number(j.thickness_mm)||10,a=Number(j.opening_angle_deg)||60,g=Number(j.root_gap_mm)||2,land=Number(j.land_mm)||0,cap=Number(j.face_reinforcement_mm)||0,root=Number(j.root_reinforcement_mm)||0;
+function otherDiagram(j,finished){
+ const type=j.type,t=Math.max(1,Number(j.thickness_mm)||10),g=Math.max(0,Number(j.root_gap_mm)||0),a=Math.max(5,Number(j.opening_angle_deg)||60),land=Math.max(0,Number(j.land_mm)||0),cap=Math.max(0,Number(j.face_reinforcement_mm)||0),root=Math.max(0,Number(j.root_reinforcement_mm)||0);
+ const c=150,y=94,sc=Math.min(6,65/t),top=y-t*sc,half=g*sc/2,edge=Math.min(58,Math.max(4,(t-land)*sc*Math.tan(a*Math.PI/360))),weldColor='#e79c4b';
+ let metal='',weld='',caption='';
+ if(type==='Kehlnaht'){
+   metal=`<path d="M35 28 H91 V${y} H265 V${y+18} H35 Z" fill="#b6c2cd" stroke="#60758a"/><path d="M35 28 H91 V${y} H35 Z" fill="#b6c2cd" stroke="#60758a"/>`;
+   weld=`<path d="M91 ${y-43} Q98 ${y-12} 136 ${y} L91 ${y} Z" fill="${weldColor}" stroke="#995b23"/>`;
+   caption='Kehlnaht · Eckstoß (schematisch)';
+ }else{
+   let upper=0,lower=0;
+   if(type==='Y-Stumpfnaht')upper=edge;
+   if(type==='X-Stumpfnaht'){upper=edge/1.6;lower=edge/1.6}
+   const mid=(top+y)/2;
+   const left=type==='I-Stumpfnaht'?`M5 ${top} H${c-half} V${y} H5 Z`:type==='Y-Stumpfnaht'?`M5 ${top} H${c-half-upper} L${c-half} ${y-land*sc} V${y} H5 Z`:`M5 ${top} H${c-half-upper} L${c-half} ${mid} L${c-half-lower} ${y} H5 Z`;
+   const right=type==='I-Stumpfnaht'?`M${c+half} ${top} H295 V${y} H${c+half} Z`:type==='Y-Stumpfnaht'?`M${c+half+upper} ${top} H295 V${y} H${c+half} V${y-land*sc} Z`:`M${c+half+upper} ${top} H295 V${y} H${c+half+lower} L${c+half} ${mid} Z`;
+   metal=`<path d="${left} ${right}" fill="#b6c2cd" stroke="#60758a"/>`;
+   const lx=type==='I-Stumpfnaht'?c-half:c-half-upper,rx=type==='I-Stumpfnaht'?c+half:c+half+upper;
+   weld=`<path d="M${lx} ${top} Q${c} ${top-cap*sc} ${rx} ${top} L${c+half} ${type==='X-Stumpfnaht'?mid:y} L${c+half+lower} ${y} Q${c} ${y+root*sc} ${c-half-lower} ${y} L${c-half} ${type==='X-Stumpfnaht'?mid:y} Z" fill="${weldColor}" stroke="#995b23"/>`;
+   caption=(type==='I-Stumpfnaht'?'Wurzelspalt '+fmt(g)+' mm':type==='Y-Stumpfnaht'?'Winkel '+fmt(a)+'° · Steg '+fmt(land)+' mm':'Winkel '+fmt(a)+'° · Wurzelspalt '+fmt(g)+' mm');
+ }
+ return `<svg viewBox="0 0 300 125" xmlns="http://www.w3.org/2000/svg">${metal}${finished?weld:''}<text x="150" y="14" font-size="10" fill="#1b5c96" text-anchor="middle">${esc(type)}</text><text x="150" y="119" font-size="9" fill="#1b5c96" text-anchor="middle">${caption}</text></svg>`;
+}
+function diagram(j,finished){if(j.type!=='V-Stumpfnaht')return otherDiagram(j,finished);let t=Number(j.thickness_mm)||10,a=Number(j.opening_angle_deg)||60,g=Number(j.root_gap_mm)||2,land=Number(j.land_mm)||0,cap=Number(j.face_reinforcement_mm)||0,root=Number(j.root_reinforcement_mm)||0;
  const scale=Math.min(6.8,66/Math.max(1,t)),y=92,top=y-t*scale,cx=150,half=g*scale/2,sp=(t-land)*scale*Math.tan(a*Math.PI/360),xl=cx-half-sp,xr=cx+half+sp,il=cx-half,ir=cx+half,shoulder=y-land*scale;
  const metal=`<path d="M5 ${top} H${xl} L${il} ${shoulder} V${y} H5 Z M${xr} ${top} H295 V${y} H${ir} V${shoulder} Z" fill="#b6c2cd" stroke="#60758a" stroke-width="1"/>`;
  // Wurzelüberhöhung als sanfte Rundung UNTER der Blechunterkante; Maß senkrecht.
@@ -64,25 +86,30 @@ const GAS_CATALOG=[
 ];
 
 // Katalogeinträge sind Muster zur Eingabeunterstützung, keine geprüften Produktzulassungen.
+// Technische Musterklassifizierungen. KEINE Zuordnung zu realen Handelsprodukten oder Zulassungen.
 const FILLER_ITEMS=[
- {id:'mag-g3',families:['steel'],process:['135'],manufacturer:'Capilla',designation:'G 42 4 M21 3Si1',standard:'EN ISO 14341-A',diameters:[0.8,1,1.2,1.6]},
- {id:'mag-g4',families:['steel'],process:['135'],manufacturer:'Andere / frei',designation:'G 46 4 M21 4Si1',standard:'EN ISO 14341-A',diameters:[0.8,1,1.2]},
- {id:'tig-steel',families:['steel'],process:['141'],manufacturer:'Andere / frei',designation:'W 42 5 W3Si1',standard:'EN ISO 636-A',diameters:[1.6,2,2.4]},
- {id:'mag-308l',families:['stainless'],process:['135'],manufacturer:'Andere / frei',designation:'G 19 9 L Si',standard:'EN ISO 14343-A',diameters:[0.8,1,1.2]},
- {id:'mag-316l',families:['stainless'],process:['135'],manufacturer:'Andere / frei',designation:'G 19 12 3 L Si',standard:'EN ISO 14343-A',diameters:[0.8,1,1.2]},
- {id:'tig-308l',families:['stainless'],process:['141'],manufacturer:'Andere / frei',designation:'W 19 9 L',standard:'EN ISO 14343-A',diameters:[1.6,2,2.4]},
- {id:'tig-316l',families:['stainless'],process:['141'],manufacturer:'Andere / frei',designation:'W 19 12 3 L',standard:'EN ISO 14343-A',diameters:[1.6,2,2.4]},
- {id:'mixed-309',families:['mixed'],process:['135'],manufacturer:'Andere / frei',designation:'G 23 12 L Si',standard:'EN ISO 14343-A',diameters:[0.8,1,1.2]},
- {id:'mixed-tig',families:['mixed'],process:['141'],manufacturer:'Andere / frei',designation:'W 23 12 L',standard:'EN ISO 14343-A',diameters:[1.6,2,2.4]}
+ {id:'g3',families:['steel'],process:['135','136','138'],designation:'G 42 4 M21 3Si1',standard:'EN ISO 14341-A',diameters:[0.8,1,1.2,1.6]},
+ {id:'g4',families:['steel'],process:['135','136','138'],designation:'G 46 4 M21 4Si1',standard:'EN ISO 14341-A',diameters:[0.8,1,1.2]},
+ {id:'w3',families:['steel'],process:['141'],designation:'W 42 5 W3Si1',standard:'EN ISO 636-A',diameters:[1.6,2,2.4,3.2]},
+ {id:'ss1',families:['stainless'],process:['135','136','138'],designation:'G 19 9 L Si',standard:'EN ISO 14343-A',diameters:[0.8,1,1.2]},
+ {id:'ss2',families:['stainless'],process:['135','136','138'],designation:'G 19 12 3 L Si',standard:'EN ISO 14343-A',diameters:[0.8,1,1.2]},
+ {id:'sst1',families:['stainless'],process:['141'],designation:'W 19 9 L',standard:'EN ISO 14343-A',diameters:[1.6,2,2.4,3.2]},
+ {id:'sst2',families:['stainless'],process:['141'],designation:'W 19 12 3 L',standard:'EN ISO 14343-A',diameters:[1.6,2,2.4,3.2]},
+ {id:'mix1',families:['mixed'],process:['135','136','138'],designation:'G 23 12 L Si',standard:'EN ISO 14343-A',diameters:[0.8,1,1.2]},
+ {id:'mix2',families:['mixed'],process:['141'],designation:'W 23 12 L',standard:'EN ISO 14343-A',diameters:[1.6,2,2.4]},
+ {id:'stick',families:['steel'],process:['111'],designation:'E 42 4 B 42 H5',standard:'EN ISO 2560-A',diameters:[2,2.5,3.2,4]},
+ {id:'stickss',families:['stainless','mixed'],process:['111'],designation:'E 19 9 L R',standard:'EN ISO 3581-A',diameters:[2,2.5,3.2,4]}
 ];
 const GAS_ITEMS=[
- {id:'linde-m21',manufacturer:'Linde',name:'M21 – 82 % Ar / 18 % CO₂ (Beispiel)',process:['135','136','138'],group:'M21',composition:'82 % Ar / 18 % CO₂'},
- {id:'linde-i1',manufacturer:'Linde',name:'Argon 4.6 (Beispiel)',process:['131','141','142'],group:'I1',composition:'100 % Ar'},
- {id:'messer-m21',manufacturer:'Messer',name:'M21 – 82 % Ar / 18 % CO₂ (Beispiel)',process:['135','136','138'],group:'M21',composition:'82 % Ar / 18 % CO₂'},
- {id:'air-m21',manufacturer:'Air Liquide',name:'M21 – 82 % Ar / 18 % CO₂ (Beispiel)',process:['135','136','138'],group:'M21',composition:'82 % Ar / 18 % CO₂'},
- {id:'other-m20',manufacturer:'Andere / frei',name:'M20 – 92 % Ar / 8 % CO₂ (Beispiel)',process:['135','136','138'],group:'M20',composition:'92 % Ar / 8 % CO₂'},
- {id:'other-c1',manufacturer:'Andere / frei',name:'C1 – CO₂',process:['135','136','138'],group:'C1',composition:'100 % CO₂'},
- {id:'other-i2',manufacturer:'Andere / frei',name:'I2 – Helium',process:['131','141','142'],group:'I2',composition:'100 % He'}
+ {id:'m21-18',process:['135','136','138'],name:'M21 · 82 % Ar / 18 % CO₂',group:'M21',composition:'82 % Ar / 18 % CO₂'},
+ {id:'m21-15',process:['135','136','138'],name:'M21 · 85 % Ar / 15 % CO₂',group:'M21',composition:'85 % Ar / 15 % CO₂'},
+ {id:'m21-20',process:['135','136','138'],name:'M21 · 80 % Ar / 20 % CO₂',group:'M21',composition:'80 % Ar / 20 % CO₂'},
+ {id:'m20-8',process:['135','136','138'],name:'M20 · 92 % Ar / 8 % CO₂',group:'M20',composition:'92 % Ar / 8 % CO₂'},
+ {id:'m20-5',process:['135','136','138'],name:'M20 · 95 % Ar / 5 % CO₂',group:'M20',composition:'95 % Ar / 5 % CO₂'},
+ {id:'c1',process:['135','136','138'],name:'C1 · 100 % CO₂',group:'C1',composition:'100 % CO₂'},
+ {id:'i1',process:['131','141','142'],name:'I1 · 100 % Ar',group:'I1',composition:'100 % Ar'},
+ {id:'i2',process:['131','141','142'],name:'I2 · 100 % He',group:'I2',composition:'100 % He'},
+ {id:'i3',process:['131','141','142'],name:'I3 · 70 % Ar / 30 % He (Beispiel)',group:'I3',composition:'70 % Ar / 30 % He'}
 ];
 function addCatalogs(){
  const editor=document.getElementById('editor');if(!editor||!db?.[active])return;
@@ -120,7 +147,7 @@ function addCatalogs(){
    const manufacturers=select('Hersteller', ['Capilla','Böhler','Lincoln Electric','ESAB','Andere / frei'].map(x=>({value:x,label:x})), 'Hersteller wählen');
    const chosen=select('Schweißzusatz aus Katalog',[],'Zusatz auswählen');
    fillerSection.append(manufacturers.l,chosen.l);
-   const note=document.createElement('p');note.className='material-note';note.textContent='Katalog: Musterklassifizierungen. Hersteller-Zuordnung und Produktzulassungen müssen anhand des konkreten Produkts geprüft werden.';fillerSection.append(note);
+   const note=document.createElement('p');note.className='material-note';note.textContent='Normklassifizierungen als Eingabehilfe. Die Liste ist keine Hersteller-Produktdatenbank; konkrete Produkte und Zulassungen bitte prüfen.';fillerSection.append(note);
    for(const path of ['filler.designation','filler.standard','filler.diameter_mm']){
      const l=label(path);if(l)fillerSection.append(l);
    }
@@ -128,8 +155,19 @@ function addCatalogs(){
    approval.innerHTML='<div class="catalog-title">TÜV- / DB-Nachweise (produktbezogen)</div><div class="grid"><label>TÜV-Zulassungsnummer<input data-path="filler.tuv_approval"></label><label>DB-Zulassungskennung<input data-path="filler.db_approval"></label><label>Gültig bis<input data-path="filler.approval_valid_until" placeholder="JJJJ-MM-TT"></label><label>Nachweisdokument<input data-path="filler.approval_document"></label><label>Prüfstatus<select data-path="filler.approval_status"><option value="nicht_hinterlegt">Nicht hinterlegt</option><option value="vorhanden">Nachweis vorhanden</option><option value="geprueft">Manuell geprüft</option></select></label></div>';
    fillerSection.append(approval);
    for(const e of approval.querySelectorAll('[data-path]')){const v=pathGet(w,e.dataset.path);if(v!=null)e.value=v}
-   const diameter=field('filler.diameter_mm');
-   // Ein einziges Durchmesserfeld: vorhandenen Wert und freie Eingabe erhalten.
+   const oldDiameter=field('filler.diameter_mm');
+   // Ein einziges Dropdown an Stelle des bisherigen Eingabefelds, identischer Datenpfad.
+   const diameterSelect=document.createElement('select');diameterSelect.dataset.path='filler.diameter_mm';
+   oldDiameter.replaceWith(diameterSelect);
+   const diameter=diameterSelect;
+   function updateDiameters(item){
+     const old=String(diameter.value||w.filler.diameter_mm||'');
+     const options=item?.diameters||[0.6,0.8,1,1.2,1.4,1.6,2,2.4,2.5,3.2,4];
+     const values=options.map(String);if(old&&!values.includes(old))values.push(old);
+     diameter.innerHTML=values.map(v=>`<option value=\"${esc(v)}\">${v.replace('.',',')} mm${options.map(String).includes(v)?'':' (Bestandswert)'}</option>`).join('');
+     diameter.value=old||values[0];
+   }
+   updateDiameters();
    const manufacturerInput=field('filler.manufacturer');
    // Das Originalfeld bleibt als unsichtbarer Datenträger für die bestehende Speicherung.
    if(manufacturerInput){manufacturerInput.closest('label').style.display='none';}
@@ -142,14 +180,14 @@ function addCatalogs(){
    const fillList=()=>{
      const family=getFamily();
      const maker=manufacturers.e.value;
-     return FILLER_ITEMS.filter(x=>x.process.includes(proc())&&x.families.includes(family)&&(!maker||maker==='Andere / frei'||x.manufacturer===maker));
+     return FILLER_ITEMS.filter(x=>x.process.includes(proc())&&(family==='unknown'||x.families.includes(family)));
    };
    const refresh=()=>{
      const items=fillList();
      chosen.e.innerHTML='<option value="">'+(getFamily()==='unknown'?'Werkstoffe prüfen / freie Eingabe':'Zusatz auswählen / freie Eingabe')+'</option>'+items.map(x=>`<option value="${x.id}">${esc(x.designation)} · ${esc(x.standard)}</option>`).join('');
      const existing=items.find(x=>x.designation===field('filler.designation')?.value);
      if(existing)chosen.e.value=existing.id;
-     // Keine zweite Durchmesser-Auswahl erzeugen.
+     updateDiameters(existing);
    };
    refreshFiller=refresh;
    manufacturers.e.value=w.filler.manufacturer||'';
@@ -158,7 +196,7 @@ function addCatalogs(){
    chosen.e.addEventListener('change',()=>{
      const item=FILLER_ITEMS.find(x=>x.id===chosen.e.value);if(!item)return;
      set('filler.designation',item.designation);set('filler.standard',item.standard);
-     const current=Number(diameter.value);if(!item.diameters.includes(current))diameter.value=item.diameters[0];
+     const current=Number(diameter.value);if(!item.diameters.includes(current))diameter.value=String(item.diameters[0]);
      // Zulassungsangaben sind nie von einer Klassifizierung auf ein anderes Produkt übertragbar.
      for(const key of ['tuv_approval','db_approval','approval_valid_until','approval_document'])set('filler.'+key,'');
      set('filler.approval_status','nicht_hinterlegt');refresh();
@@ -171,14 +209,14 @@ function addCatalogs(){
  if(gasStart){gasStart.parentElement.before(gasSection);
    const makers=select('Gashersteller',['Linde','Messer','Air Liquide','Andere / frei'].map(x=>({value:x,label:x})),'Hersteller wählen');
    const gases=select('Gas / Handelsname',[],'Gas auswählen');
-   gasSection.append(makers.l,gases.l);
+   gasSection.append(makers.l,gases.l);const gasNote=document.createElement('p');gasNote.className='material-note';gasNote.textContent='Generische Gasgemische, keine verifizierten Handelsprodukte des ausgewählten Herstellers.';gasSection.append(gasNote);
    for(const path of ['shielding_gas.manufacturer','shielding_gas.group','shielding_gas.composition','shielding_gas.standard','shielding_gas.nozzle_diameter_mm']){
      const l=label(path);if(l)gasSection.append(l);
    }
    makers.e.value=w.shielding_gas.manufacturer||'';
    if(!Array.from(makers.e.options).some(x=>x.value===makers.e.value))makers.e.value='Andere / frei';
    const refreshGas=()=>{
-     const list=GAS_ITEMS.filter(x=>x.process.includes(field('process.number')?.value||w.process.number)&&(!makers.e.value||makers.e.value==='Andere / frei'||x.manufacturer===makers.e.value));
+     const list=GAS_ITEMS.filter(x=>x.process.includes(field('process.number')?.value||w.process.number));
      gases.e.innerHTML='<option value="">Gas auswählen / freie Eingabe</option>'+list.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
      const existing=list.find(x=>x.group===field('shielding_gas.group')?.value&&x.composition===field('shielding_gas.composition')?.value);
      if(existing)gases.e.value=existing.id;
@@ -227,11 +265,6 @@ render=function(){
     for(const [path,key] of [['joint.type','type'],['joint.thickness_mm','thickness_mm'],['joint.opening_angle_deg','opening_angle_deg'],['joint.root_gap_mm','root_gap_mm'],['joint.land_mm','land_mm'],['joint.face_reinforcement_mm','face_reinforcement_mm'],['joint.root_reinforcement_mm','root_reinforcement_mm']]){
       const field=editor.querySelector(`[data-path="${path}"]`);
       if(field)j[key]=field.type==='number'?Number(field.value):field.value;
-    }
-    if(j.type!=='V-Stumpfnaht'){
-      document.getElementById('livePrep').textContent='Für diese Nahtart ist noch keine Zeichnung verfügbar.';
-      document.getElementById('liveFinished').textContent='Für diese Nahtart ist noch keine Zeichnung verfügbar.';
-      return;
     }
     document.getElementById('livePrep').innerHTML=diagram(j,false);
     document.getElementById('liveFinished').innerHTML=diagram(j,true);
