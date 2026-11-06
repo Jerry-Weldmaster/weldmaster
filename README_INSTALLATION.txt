@@ -8,3 +8,5 @@ Vorher WPS-Daten als JSON exportieren. App nach Upload in Safari neu laden.
 Zeichnungen sind schematisch und nicht normgeprüft.
 
 Version 2.7: überarbeitete Schweißpositions-Skizzen für BW/FW, symmetrische Wurzel und iPad-Datumsfeld-Layout.
+
+Version 2.8: überarbeitete Blech-BW-Positionen PA und PE sowie FW-Positionen PA, PB, PD, PE, PF und PG. SVG-Skizzen sind schematisch und fachlich zu prüfen.

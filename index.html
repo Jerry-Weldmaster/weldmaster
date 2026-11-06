@@ -425,42 +425,49 @@ const WM_POSITIONS={
  'Rohr-FW':[['PA','Wannenposition'],['PB','Horizontal-Vertikal'],['PD','Horizontal-Überkopf'],['PF','Steigend'],['PG','Fallend']]
 };
 function wmPositionDrawing(code,form,joint){
- // Independently drawn vector pictograms: weld location, joint and orientation are intentional.
+ // Individuelle, schematische 3D-Zeichnungen für die Lageauswahl.
  const metal='#b9c4cd',side='#8999a7',edge='#435669',bead='#dc5637';
- const plate=(x,y,w,h)=>`<path d="M${x} ${y} l7 -6 h${w} l-7 6 Z" fill="#d9e0e5" stroke="${edge}" stroke-width="1.3"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${metal}" stroke="${edge}" stroke-width="1.4"/><path d="M${x+w} ${y} l7 -6 v${h} l-7 6 Z" fill="${side}" stroke="${edge}" stroke-width="1.2"/>`;
- const seam=(d)=>`<path d="${d}" stroke="${bead}" stroke-width="6" fill="none" stroke-linecap="round"/><path d="${d}" stroke="#ffb082" stroke-width="1.4" fill="none" stroke-dasharray="2 3"/>`;
- const torch=(x,y,tx,ty)=>`<path d="M${x} ${y} L${tx} ${ty}" stroke="#71818b" stroke-width="7" stroke-linecap="round"/><path d="M${x} ${y} L${tx} ${ty}" stroke="#e7ebee" stroke-width="3.5" stroke-linecap="round"/>`;
- const arrow=(up)=>`<path d="M109 ${up?66:15} V${up?18:66} m-6 ${up?7:-7} l6 ${up?-7:7} l6 ${up?7:-7}" stroke="#1689cb" stroke-width="2" fill="none"/>`;
+ const poly=(points,fill=metal)=>`<polygon points="${points}" fill="${fill}" stroke="${edge}" stroke-width="1.5" stroke-linejoin="round"/>`;
+ const seam=d=>`<path d="${d}" stroke="${bead}" stroke-width="6" fill="none" stroke-linecap="round"/><path d="${d}" stroke="#ffc49b" stroke-width="1.4" fill="none" stroke-dasharray="2 3"/>`;
+ const torch=(x,y,tx,ty)=>`<path d="M${x} ${y} L${tx} ${ty}" stroke="#647987" stroke-width="7" stroke-linecap="round"/><path d="M${x} ${y} L${tx} ${ty}" stroke="#e9eff2" stroke-width="3.5" stroke-linecap="round"/>`;
+ const arrow=up=>`<path d="M111 ${up?65:16} V${up?17:65} m-6 ${up?7:-7} l6 ${up?-7:7} l6 ${up?7:-7}" stroke="#1689cb" stroke-width="2" fill="none"/>`;
+ const upright=(x,y,w,h)=>poly(`${x},${y} ${x+w},${y} ${x+w},${y+h} ${x},${y+h}`);
  let g='';
  if(form==='Rohr'){
-   const vertical=code==='PC';const tilt=code==='H-L045'||code==='J-L045';
+   // Rohrpositionen werden gesondert als zylindrische Bauteile gezeigt.
+   const vertical=code==='PC', tilt=code==='H-L045'||code==='J-L045';
    const transform=vertical?'rotate(-90 60 40)':tilt?'rotate(-45 60 40)':'';
-   g=`<g transform="${transform}"><path d="M24 25 H92 V59 H24Z" fill="${metal}" stroke="${edge}" stroke-width="1.4"/><ellipse cx="24" cy="42" rx="11" ry="17" fill="#dfe6e9" stroke="${edge}" stroke-width="1.5"/><ellipse cx="24" cy="42" rx="6" ry="11" fill="#556c79"/><ellipse cx="92" cy="42" rx="11" ry="17" fill="${side}" stroke="${edge}" stroke-width="1.5"/><ellipse cx="92" cy="42" rx="6" ry="11" fill="#e8edf0"/><path d="M56 25 C67 31 67 53 56 59" fill="none" stroke="${bead}" stroke-width="6"/>${torch(96,7,62,33)}</g>`;
+   g=`<g transform="${transform}"><path d="M24 25 H92 V59 H24Z" fill="${metal}" stroke="${edge}" stroke-width="1.4"/><ellipse cx="24" cy="42" rx="11" ry="17" fill="#dfe6e9" stroke="${edge}" stroke-width="1.5"/><ellipse cx="24" cy="42" rx="6" ry="11" fill="#556c79"/><ellipse cx="92" cy="42" rx="11" ry="17" fill="${side}" stroke="${edge}" stroke-width="1.5"/><ellipse cx="92" cy="42" rx="6" ry="11" fill="#e8edf0"/>${seam('M56 25 C67 31 67 53 56 59')}${torch(96,7,62,33)}</g>`;
    if(['PH','PJ','H-L045','J-L045'].includes(code))g+=arrow(code==='PH'||code==='H-L045');
  }else if(joint==='BW'){
    if(code==='PA'){
-     g=`<path d="M10 45 L52 33 L52 59 L10 71Z" fill="${metal}" stroke="${edge}"/><path d="M60 33 L107 45 L107 71 L60 59Z" fill="${metal}" stroke="${edge}"/>${seam('M56 34 L56 60')}${torch(94,7,57,38)}`;
+     // PA: beide Platten liegen flach in EINER Ebene, Naht auf Oberseite.
+     g=`${poly('9,37 51,24 51,57 9,70')}${poly('59,24 108,37 108,70 59,57')}${poly('9,37 51,24 51,32 9,45','#dce4e9')}${poly('59,24 108,37 108,45 59,32','#dce4e9')}${seam('M55 26 L55 57')}${torch(97,5,57,33)}`;
    }else if(code==='PC'){
-     // PC/2G: upright plates one ABOVE the other, horizontal butt seam.
-     g=`${plate(20,15,78,23)}${plate(20,45,78,23)}${seam('M20 41 L98 41')}${torch(103,7,71,40)}`;
+     // PC/2G: senkrecht übereinander stehende Bleche, waagerechte Stoßnaht.
+     g=`${upright(17,13,86,25)}${upright(17,43,86,26)}${poly('17,13 25,7 110,7 103,13','#dce4e9')}${seam('M17 40 L103 40')}${torch(106,7,75,40)}`;
    }else if(code==='PE'){
-     g=`<path d="M11 24 L56 30 L56 50 L11 44Z" fill="${metal}" stroke="${edge}"/><path d="M63 30 L108 24 L108 44 L63 50Z" fill="${metal}" stroke="${edge}"/>${seam('M60 30 L60 50')}${torch(97,75,60,47)}`;
+     // PE/4G: Platten waagerecht, Schweißung ausdrücklich von UNTEN.
+     g=`${poly('8,19 52,19 52,43 8,43')}${poly('61,19 107,19 107,43 61,43')}${poly('8,19 24,11 52,11 52,19','#dce4e9')}${poly('61,19 91,11 107,19','#dce4e9')}${seam('M56 42 L56 20')}${torch(96,76,56,44)}`;
    }else{
-     g=`${plate(25,10,64,61)}${seam('M58 11 L58 70')}${torch(10,58,58,code==='PF'?54:27)}${arrow(code==='PF')}`;
+     g=`${upright(20,11,39,58)}${upright(64,11,39,58)}${seam('M61 12 L61 68')}${torch(10,60,61,code==='PF'?54:25)}${arrow(code==='PF')}`;
    }
  }else{
    if(code==='PA'){
-     // V shaped corner: fillet is at bottom of trough.
-     g=`<path d="M12 22 L58 58 L58 71 L12 36Z" fill="${metal}" stroke="${edge}"/><path d="M58 58 L105 22 L105 36 L58 71Z" fill="${metal}" stroke="${edge}"/>${seam('M58 58 L58 71')}${torch(9,72,57,61)}`;
+     // PA/1F: geneigte Platten als V-Wanne, Schweißgut in der inneren Ecke.
+     g=`${poly('9,20 55,57 55,68 9,34')}${poly('55,57 106,20 106,34 55,68')}${seam('M43 56 L57 64')}${torch(8,76,51,61)}`;
    }else if(code==='PB'){
-     g=`<path d="M10 62 L93 62 L107 70 L24 70Z" fill="${metal}" stroke="${edge}"/><path d="M38 17 L82 17 L82 62 L38 62Z" fill="${metal}" stroke="${edge}"/><path d="M82 17 L89 11 V62 H82Z" fill="${side}" stroke="${edge}"/>${seam('M40 60 L82 60')}${torch(107,27,79,58)}`;
+     // PB/2F: senkrechter Steg auf waagerechter Grundplatte.
+     g=`${poly('8,62 96,62 110,70 22,70')}${poly('39,16 81,16 81,62 39,62')}${poly('81,16 89,10 89,62 81,62',side)}${seam('M41 61 L79 61')}${torch(107,28,78,59)}`;
    }else if(code==='PD'){
-     g=`<path d="M12 15 L107 15 L107 25 L12 25Z" fill="${metal}" stroke="${edge}"/><path d="M43 25 H84 V72 H43Z" fill="${metal}" stroke="${edge}"/>${seam('M44 27 L80 27')}${torch(101,66,73,29)}`;
+     // PD/4F: Kehlnaht am horizontalen Überkopf-Eck, unter einem Überhang.
+     g=`${poly('9,15 109,15 109,25 9,25')}${poly('40,25 50,25 50,73 40,73')}${seam('M50 28 L84 28')}${torch(107,70,79,29)}`;
    }else if(code==='PE'){
-     // True overhead corner position, inverted fillet underneath the plate.
-     g=`<path d="M12 14 L108 14 L108 25 L12 25Z" fill="${metal}" stroke="${edge}"/><path d="M48 25 H58 V73 H48Z" fill="${metal}" stroke="${edge}"/>${seam('M58 27 L85 27')}${torch(103,73,76,29)}`;
+     // PE/4F: über Kopf, von unten zugängliche Innenecke, anders als PD.
+     g=`${poly('17,18 103,18 103,28 17,28')}${poly('55,28 65,28 65,68 55,68')}${seam('M40 29 L55 29')}${torch(13,74,47,30)}`;
    }else{
-     g=`<path d="M13 65 H97 V73 H13Z" fill="${metal}" stroke="${edge}"/><path d="M40 10 H51 V65 H40Z" fill="${metal}" stroke="${edge}"/>${seam('M52 15 L52 62')}${torch(10,45,53,code==='PF'?51:27)}${arrow(code==='PF')}`;
+     // PF/PG: stehender T-Stoß mit VERTIKALER Kehlnaht und Schweißrichtung.
+     g=`${upright(20,11,55,59)}${poly('47,11 64,18 64,70 47,63',side)}${seam('M47 14 L47 65')}${torch(7,code==='PF'?63:23,47,code==='PF'?55:28)}${arrow(code==='PF')}`;
    }
  }
  return `<svg viewBox="0 0 120 80" role="img" aria-label="Schweißposition ${esc(code)} ${form} ${joint}">${g}</svg>`;
