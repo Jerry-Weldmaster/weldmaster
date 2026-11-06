@@ -36,6 +36,12 @@ html[data-theme="dark"] .print-controls button{background:#fff;color:#183c61}
 .wm-prep-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.wm-prep-options label{display:flex;align-items:center;gap:8px;font-weight:500}.wm-prep-options input{width:auto;margin:0;accent-color:#e79c4b}#wmSettings{border:1px solid #657d96;border-radius:10px;padding:12px;margin-bottom:16px}#wmSettings summary{cursor:pointer;font-weight:700;font-size:15px}.wm-settings input[type=file]{max-width:230px}@media(max-width:480px){.wm-prep-options{grid-template-columns:1fr}}\n.wm-disabled{opacity:.5}.wm-disabled select{cursor:not-allowed}#editor select:disabled{background:#d9e0e6;color:#56677a}
 
 .wm-position-picker{grid-column:1/-1;padding:12px;border:1px solid #adc4d9;border-radius:12px;margin:10px 0}.wm-position-picker h4{margin:0 0 8px;font-size:14px}.wm-position-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:8px}.wm-position-card{background:#fff;border:1.5px solid #9eafbf;border-radius:10px;padding:7px 4px;cursor:pointer;color:#16334c;text-align:center;min-height:122px}.wm-position-card.selected{border:3px solid #1672b8;background:#e8f5ff}.wm-position-card svg{display:block;width:100%;height:75px}.wm-position-card b{display:block;color:#b63b29}.wm-position-card small{display:block;font-size:10px;line-height:1.2}.wm-position-picker p{font-size:11px;margin:8px 0 0;color:#64748b}html[data-theme="dark"] .wm-position-card{background:#293b4d;color:#f1f6fc;border-color:#58728a}html[data-theme="dark"] .wm-position-card.selected{background:#1d4e74;border-color:#76c8ff}html[data-theme="dark"] .wm-position-picker{border-color:#506b81}
+
+/* v2.7: prevent TÜV validity-date and evidence fields from overlapping on iPad */
+.grid > label,.grid > div,.grid > fieldset{min-width:0;max-width:100%}
+.grid input[type="date"],.grid input,.grid select{min-width:0;max-width:100%;box-sizing:border-box}
+.grid input[type="date"]{width:100%;font-size:16px;overflow:hidden}
+@media(max-width:900px){.grid:has(input[data-path="filler.approval_valid_until"]){grid-template-columns:1fr}}
 </style></head><body><header><h1>⚙ WeldMaster</h1><p>WPS-Verwaltung · lokale Speicherung · Entwicklungsversion</p></header><div class="wrap"><aside class="panel"><div class="head"><h2>Meine WPS</h2><span id="count" class="muted"></span></div><details id="wmSettings" open><summary>⚙ Firmeneinstellungen & Design</summary><div class="wm-settings"><label>Firmenname für neue WPS <input id="wmDefaultCompany" type="text" placeholder="Firmenname" oninput="saveWmDefaultCompany(this.value)"></label><label>Ort für neue WPS <input id="wmDefaultCity" type="text" placeholder="Ort" oninput="saveWmDefaultCity(this.value)"></label><label>Design <select id="wmTheme" onchange="setWmTheme(this.value)"><option value="dark">Dunkel</option><option value="light">Hell</option><option value="auto">Automatisch</option></select></label><label>Firmenlogo auswählen <input id="wmLogoInput" type="file" accept="image/png,image/jpeg,image/webp" onchange="uploadWmLogo(event)"></label><button class="secondary" onclick="removeWmLogo()">Logo entfernen</button><img id="wmLogoPreview" class="wm-logo-preview" alt="Firmenlogo" hidden></div><p class="muted">Das Logo wird nur auf diesem Gerät gespeichert. Für die Datensicherung separat aufbewahren.</p></details><div id="list"></div><div class="toolbar"><button onclick="newWps()">+ Neue WPS</button><button class="secondary" onclick="duplicate()">Duplizieren</button></div><div class="toolbar"><label class="filebutton secondary">JSON importieren<input type="file" accept=".json,application/json" onchange="importFile(event)"></label><button class="secondary" onclick="exportAll()">Alle exportieren</button></div><p class="muted">Speicherung erfolgt in diesem Browser auf diesem Gerät. Für Sicherungen regelmäßig JSON exportieren.</p></aside><main class="panel"><div class="head"><h2>WPS bearbeiten</h2><span class="pill">Entwurf / nicht freigegeben</span></div><div id="editor"></div><div class="toolbar"><button onclick="save()">Änderungen speichern</button><button class="secondary" onclick="exportOne()">WPS exportieren</button><button class="danger" onclick="removeWps()">Löschen</button></div><div class="status" id="status" aria-live="polite"></div></main></div><footer>WeldMaster · Kein Cloud-Sync. Daten können bei Löschung der Browserdaten verloren gehen. Keine automatische technische oder normative Freigabe.</footer><script>
 const seed={"schema_version": "1.0", "app": "WeldMaster", "wps": {"number": "WELD-135-001", "revision": "0", "company": "Weldgod", "author": "Max Mustermann", "status": "Entwurf / nicht freigegeben", "process": {"number": "135", "name": "MAG", "execution": "manuell", "polarity": "DC+", "arc": "Kurzlichtbogen", "position": "PA"}, "joint": {"type": "V-Stumpfnaht", "preparation": ["Gereinigt und gebürstet"], "thickness_mm": 10, "opening_angle_deg": 60, "root_gap_mm": 2, "land_mm": 0, "face_reinforcement_mm": 1.5, "root_reinforcement_mm": 1, "misalignment_mm": 0}, "base_materials": [{"designation": "S355JR", "group": "1.2", "thickness_mm": 10, "form": "Blech", "outer_diameter_mm": 60.3}, {"designation": "S355JR", "group": "1.2", "thickness_mm": 10, "form": "Blech", "outer_diameter_mm": 60.3}], "filler": {"designation": "G 42 4 M21 3Si1", "standard": "EN ISO 14341-A", "diameter_mm": 1.0, "manufacturer": "Capilla"}, "shielding_gas": {"group": "M21", "composition": "82 % Ar / 18 % CO₂", "standard": "DIN EN ISO 14175", "flow_l_min": [10, 15], "nozzle_diameter_mm": 12, "manufacturer": "Linde", "root_shielding": false}, "passes": [{"name": "Wurzellage", "current_A": [110, 140], "voltage_V": [17, 20], "wire_feed_m_min": [3.5, 5.0], "travel_speed_cm_min": [15, 25], "technique": "Strichraupe"}], "preheat_C": 20, "interpass_max_C": 150, "stickout_mm": 12, "torch_direction": "stechend", "qualification": {"basis": "DIN EN ISO 15610", "evidence_number": "09673.07", "document": "TÜV-Kennblatt", "evidence_status": "nachweis_geprueft", "scope": null, "manual_comparison_documented": true, "notes": ""}}, "document_layout": {"page": "DIN A4", "drawing_1": "Nahtvorbereitung", "drawing_2": "Fertige Schweißnaht", "drawing_size": "klein", "caption_clearance": "separate", "approved_layout_reference": "WeldMaster_WELD-135-001_Rev0_Beschriftung_frei.pdf"}, "review_required": true};
 const KEY='weldmaster-wps-v1';let db,active;
@@ -97,8 +103,8 @@ function otherDiagram(j,finished){
    const left=type==='I-Stumpfnaht'?`M5 ${top} H${c-half} V${y} H5 Z`:type==='Y-Stumpfnaht'?`M5 ${top} H${c-half-upper} L${c-half} ${y-land*sc} V${y} H5 Z`:`M5 ${top} H${c-half-upper} L${c-half} ${mid} L${c-half-lower} ${y} H5 Z`;
    const right=type==='I-Stumpfnaht'?`M${c+half} ${top} H295 V${y} H${c+half} Z`:type==='Y-Stumpfnaht'?`M${c+half+upper} ${top} H295 V${y} H${c+half} V${y-land*sc} Z`:`M${c+half+upper} ${top} H295 V${y} H${c+half+lower} L${c+half} ${mid} Z`;
    metal=`<path d="${left} ${right}" fill="#b6c2cd" stroke="#60758a"/>`;
-   const penetration=Math.max(4,Math.min(18,Math.max(1.4,t*0.8)*sc));const lx=type==='I-Stumpfnaht'?c-half-penetration:c-half-upper,rx=type==='I-Stumpfnaht'?c+half+penetration:c+half+upper;
-   weld=`<path d="M${lx} ${top} Q${c} ${top-cap*sc} ${rx} ${top} L${type==='I-Stumpfnaht'?rx:c+half} ${type==='X-Stumpfnaht'?mid:y} L${type==='I-Stumpfnaht'?rx:c+half+lower} ${y} Q${c} ${y+root*sc} ${c-half-lower} ${y} L${c-half} ${type==='X-Stumpfnaht'?mid:y} Z" fill="${weldColor}" fill-opacity="0.4" stroke="#995b23"/>`;
+   const penetration=Math.max(4,Math.min(18,Math.max(1.4,t*0.8)*sc));const lx=type==='I-Stumpfnaht'?c-half-penetration:c-half-upper,rx=type==='I-Stumpfnaht'?c+half+penetration:c+half+upper;const rootHalf=Math.max(half+Math.min(penetration,9),half+2);
+   weld=`<path d="M${lx} ${top} Q${c} ${top-cap*sc} ${rx} ${top} L${type==='I-Stumpfnaht'?rx:c+half} ${type==='X-Stumpfnaht'?mid:y} L${c+rootHalf} ${y} C${c+rootHalf*.55} ${y+root*sc*.7} ${c+rootHalf*.35} ${y+root*sc} ${c} ${y+root*sc} C${c-rootHalf*.35} ${y+root*sc} ${c-rootHalf*.55} ${y+root*sc*.7} ${c-rootHalf} ${y} L${c-half} ${type==='X-Stumpfnaht'?mid:y} Z" fill="${weldColor}" fill-opacity="0.4" stroke="#995b23"/>`;
    caption=(type==='I-Stumpfnaht'?'Wurzelspalt '+fmt(g)+' mm':type==='Y-Stumpfnaht'?'Winkel '+fmt(a)+'° · Steg '+fmt(land)+' mm':'Winkel '+fmt(a)+'° · Wurzelspalt '+fmt(g)+' mm');
  }
  const seam=type==='Kehlnaht'?`<path d="M94 95 H${94+Math.max(5,Math.max(1,Number(j.material2_mm)||t)*Math.min(5,58/Math.max(Math.max(1,Number(j.material1_mm)||t),Math.max(1,Number(j.material2_mm)||t))))}" stroke="#263747" stroke-width="1.8" stroke-dasharray="3 2" fill="none"/>`:'';
@@ -407,7 +413,7 @@ function removeWmLogo(){try{localStorage.removeItem(WM_LOGO_KEY)}catch(e){}refre
 applyWmTheme((()=>{try{return localStorage.getItem(WM_THEME_KEY)||'dark'}catch(e){return 'dark'}})());
 if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{const theme=localStorage.getItem(WM_THEME_KEY)||'dark';if(theme==='auto')applyWmTheme(theme)})}
 
-// WeldMaster 2.6: selectable welding-position diagrams, company city, TIG electrode and gas grades.
+// WeldMaster 2.7: revised welding-position diagrams, company city, TIG electrode and gas grades.
 const WM_CITY_KEY='weldmaster-default-city-v1';
 function loadWmDefaultCity(){try{return localStorage.getItem(WM_CITY_KEY)||''}catch(e){return ''}}
 function saveWmDefaultCity(v){try{localStorage.setItem(WM_CITY_KEY,v)}catch(e){msg('Ort konnte nicht gespeichert werden.')}}
@@ -419,25 +425,45 @@ const WM_POSITIONS={
  'Rohr-FW':[['PA','Wannenposition'],['PB','Horizontal-Vertikal'],['PD','Horizontal-Überkopf'],['PF','Steigend'],['PG','Fallend']]
 };
 function wmPositionDrawing(code,form,joint){
- const isPipe=form==='Rohr';
- const isFillet=joint==='FW';
- const bead='#df553b',metal='#b7c2cd',edge='#506475';
- let geometry='';
- if(isPipe){
-   // Cylindrical pipe with a marked circumferential weld.
-   const rot=code==='PC'?90:code.includes('045')?-35:code==='PA'?0:code==='PH'||code==='PJ'?0:0;
-   geometry=`<g transform="rotate(${rot} 60 40)"><path d="M27 24 L87 24 L87 57 L27 57Z" fill="${metal}" stroke="${edge}" stroke-width="1.5"/><ellipse cx="27" cy="40.5" rx="10" ry="16.5" fill="#dce3e8" stroke="${edge}"/><ellipse cx="87" cy="40.5" rx="10" ry="16.5" fill="#8293a1" stroke="${edge}"/><ellipse cx="87" cy="40.5" rx="5" ry="9" fill="#f4f6f8"/><path d="M56 24 C69 33 69 48 56 57" fill="none" stroke="${bead}" stroke-width="4"/></g>`;
- }else if(isFillet){
-   geometry=`<g transform="${code==='PD'?'rotate(180 60 40)':code==='PE'?'rotate(180 60 40)':''}"><path d="M15 63 H102 V72 H15Z" fill="${metal}" stroke="${edge}"/><path d="M52 14 H61 V63 H52Z" fill="${metal}" stroke="${edge}"/><path d="M61 63 L78 63 Q63 50 61 45 Z" fill="${bead}" fill-opacity=".75" stroke="#a63b25"/></g>`;
- }else if(code==='PC'){
-   // PC/2G: two vertical plates stacked, horizontal butt joint (never a T-joint).
-   geometry=`<rect x="35" y="8" width="50" height="29" fill="${metal}" stroke="${edge}"/><rect x="35" y="43" width="50" height="29" fill="${metal}" stroke="${edge}"/><path d="M35 37 Q60 32 85 37 L85 43 Q60 48 35 43Z" fill="${bead}" fill-opacity=".8" stroke="#a63b25"/>`;
+ // Independently drawn vector pictograms: weld location, joint and orientation are intentional.
+ const metal='#b9c4cd',side='#8999a7',edge='#435669',bead='#dc5637';
+ const plate=(x,y,w,h)=>`<path d="M${x} ${y} l7 -6 h${w} l-7 6 Z" fill="#d9e0e5" stroke="${edge}" stroke-width="1.3"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${metal}" stroke="${edge}" stroke-width="1.4"/><path d="M${x+w} ${y} l7 -6 v${h} l-7 6 Z" fill="${side}" stroke="${edge}" stroke-width="1.2"/>`;
+ const seam=(d)=>`<path d="${d}" stroke="${bead}" stroke-width="6" fill="none" stroke-linecap="round"/><path d="${d}" stroke="#ffb082" stroke-width="1.4" fill="none" stroke-dasharray="2 3"/>`;
+ const torch=(x,y,tx,ty)=>`<path d="M${x} ${y} L${tx} ${ty}" stroke="#71818b" stroke-width="7" stroke-linecap="round"/><path d="M${x} ${y} L${tx} ${ty}" stroke="#e7ebee" stroke-width="3.5" stroke-linecap="round"/>`;
+ const arrow=(up)=>`<path d="M109 ${up?66:15} V${up?18:66} m-6 ${up?7:-7} l6 ${up?-7:7} l6 ${up?7:-7}" stroke="#1689cb" stroke-width="2" fill="none"/>`;
+ let g='';
+ if(form==='Rohr'){
+   const vertical=code==='PC';const tilt=code==='H-L045'||code==='J-L045';
+   const transform=vertical?'rotate(-90 60 40)':tilt?'rotate(-45 60 40)':'';
+   g=`<g transform="${transform}"><path d="M24 25 H92 V59 H24Z" fill="${metal}" stroke="${edge}" stroke-width="1.4"/><ellipse cx="24" cy="42" rx="11" ry="17" fill="#dfe6e9" stroke="${edge}" stroke-width="1.5"/><ellipse cx="24" cy="42" rx="6" ry="11" fill="#556c79"/><ellipse cx="92" cy="42" rx="11" ry="17" fill="${side}" stroke="${edge}" stroke-width="1.5"/><ellipse cx="92" cy="42" rx="6" ry="11" fill="#e8edf0"/><path d="M56 25 C67 31 67 53 56 59" fill="none" stroke="${bead}" stroke-width="6"/>${torch(96,7,62,33)}</g>`;
+   if(['PH','PJ','H-L045','J-L045'].includes(code))g+=arrow(code==='PH'||code==='H-L045');
+ }else if(joint==='BW'){
+   if(code==='PA'){
+     g=`<path d="M10 45 L52 33 L52 59 L10 71Z" fill="${metal}" stroke="${edge}"/><path d="M60 33 L107 45 L107 71 L60 59Z" fill="${metal}" stroke="${edge}"/>${seam('M56 34 L56 60')}${torch(94,7,57,38)}`;
+   }else if(code==='PC'){
+     // PC/2G: upright plates one ABOVE the other, horizontal butt seam.
+     g=`${plate(20,15,78,23)}${plate(20,45,78,23)}${seam('M20 41 L98 41')}${torch(103,7,71,40)}`;
+   }else if(code==='PE'){
+     g=`<path d="M11 24 L56 30 L56 50 L11 44Z" fill="${metal}" stroke="${edge}"/><path d="M63 30 L108 24 L108 44 L63 50Z" fill="${metal}" stroke="${edge}"/>${seam('M60 30 L60 50')}${torch(97,75,60,47)}`;
+   }else{
+     g=`${plate(25,10,64,61)}${seam('M58 11 L58 70')}${torch(10,58,58,code==='PF'?54:27)}${arrow(code==='PF')}`;
+   }
  }else{
-   const rot=code==='PA'?0:code==='PE'?180:90;
-   geometry=`<g transform="rotate(${rot} 60 40)"><path d="M10 34 H57 V66 H10Z" fill="${metal}" stroke="${edge}"/><path d="M63 34 H110 V66 H63Z" fill="${metal}" stroke="${edge}"/><path d="M55 34 Q60 28 65 34 L65 66 Q60 70 55 66 Z" fill="${bead}" fill-opacity=".8" stroke="#a63b25"/></g>`;
+   if(code==='PA'){
+     // V shaped corner: fillet is at bottom of trough.
+     g=`<path d="M12 22 L58 58 L58 71 L12 36Z" fill="${metal}" stroke="${edge}"/><path d="M58 58 L105 22 L105 36 L58 71Z" fill="${metal}" stroke="${edge}"/>${seam('M58 58 L58 71')}${torch(9,72,57,61)}`;
+   }else if(code==='PB'){
+     g=`<path d="M10 62 L93 62 L107 70 L24 70Z" fill="${metal}" stroke="${edge}"/><path d="M38 17 L82 17 L82 62 L38 62Z" fill="${metal}" stroke="${edge}"/><path d="M82 17 L89 11 V62 H82Z" fill="${side}" stroke="${edge}"/>${seam('M40 60 L82 60')}${torch(107,27,79,58)}`;
+   }else if(code==='PD'){
+     g=`<path d="M12 15 L107 15 L107 25 L12 25Z" fill="${metal}" stroke="${edge}"/><path d="M43 25 H84 V72 H43Z" fill="${metal}" stroke="${edge}"/>${seam('M44 27 L80 27')}${torch(101,66,73,29)}`;
+   }else if(code==='PE'){
+     // True overhead corner position, inverted fillet underneath the plate.
+     g=`<path d="M12 14 L108 14 L108 25 L12 25Z" fill="${metal}" stroke="${edge}"/><path d="M48 25 H58 V73 H48Z" fill="${metal}" stroke="${edge}"/>${seam('M58 27 L85 27')}${torch(103,73,76,29)}`;
+   }else{
+     g=`<path d="M13 65 H97 V73 H13Z" fill="${metal}" stroke="${edge}"/><path d="M40 10 H51 V65 H40Z" fill="${metal}" stroke="${edge}"/>${seam('M52 15 L52 62')}${torch(10,45,53,code==='PF'?51:27)}${arrow(code==='PF')}`;
+   }
  }
- const direction=['PF','PG','PH','PJ','H-L045','J-L045'].includes(code)?`<path d="M104 ${['PF','PH','H-L045'].includes(code)?65:18} V${['PF','PH','H-L045'].includes(code)?17:65} m-5 ${['PF','PH','H-L045'].includes(code)?7:-7} l5 ${['PF','PH','H-L045'].includes(code)?-7:7} l5 ${['PF','PH','H-L045'].includes(code)?7:-7}" stroke="#1873bf" stroke-width="2" fill="none"/>`:'';
- return `<svg viewBox="0 0 120 80" role="img" aria-label="Schematische Schweißposition ${esc(code)}">${geometry}${direction}</svg>`;
+ return `<svg viewBox="0 0 120 80" role="img" aria-label="Schweißposition ${esc(code)} ${form} ${joint}">${g}</svg>`;
 }
 function wmRenderPositionPicker(editor){
  const pos=editor.querySelector('[data-path="process.position"]');if(!pos)return;
