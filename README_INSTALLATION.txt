@@ -10,3 +10,5 @@ Zeichnungen sind schematisch und nicht normgeprüft.
 Version 2.7: überarbeitete Schweißpositions-Skizzen für BW/FW, symmetrische Wurzel und iPad-Datumsfeld-Layout.
 
 Version 2.8: überarbeitete Blech-BW-Positionen PA und PE sowie FW-Positionen PA, PB, PD, PE, PF und PG. SVG-Skizzen sind schematisch und fachlich zu prüfen.
+
+Version 2.9: sechs Rohr-Blech-Kehlnaht-Positionszeichnungen nach Nutzerreferenz. Zwei PB-Ansichten; beide speichern PB. Schematische Bilder, fachlich prüfen.

@@ -422,8 +422,31 @@ const WM_POSITIONS={
  'Blech-BW':[['PA','Wannenposition'],['PC','Querposition'],['PE','Überkopfposition'],['PF','Steigend'],['PG','Fallend']],
  'Blech-FW':[['PA','Wannenposition'],['PB','Horizontal-Vertikal'],['PD','Horizontal-Überkopf'],['PE','Überkopfposition'],['PF','Steigend'],['PG','Fallend']],
  'Rohr-BW':[['PA','Rohr drehbar'],['PC','Rohr senkrecht'],['PH','Steigend'],['PJ','Fallend'],['H-L045','45° steigend'],['J-L045','45° fallend']],
- 'Rohr-FW':[['PA','Wannenposition'],['PB','Horizontal-Vertikal'],['PD','Horizontal-Überkopf'],['PF','Steigend'],['PG','Fallend']]
+ 'Rohr-FW':[['PA','Wannenposition'],['PB','Horizontal-Vertikal'],['PD','Horizontal-Überkopf'],['PF','Steigend'],['PG','Fallend']],
+ 'Rohr-Blech-FW':[['PB','Horizontal-Vertikal · Rohr waagerecht','PB-horizontal'],['PH','Rohr waagerecht · steigend'],['PJ','Rohr waagerecht · fallend'],['PD','Rohr senkrecht · Überkopf'],['PA','Rohr geneigt · drehend'],['PB','Rohr senkrecht · fest','PB-vertikal']]
 };
+// Eigenständige SVG-Skizzen für die Rohr-Blech-Kehlnaht (6 Capilla-Positionen).
+// Beide PB-Darstellungen speichern normgerecht PB, unterscheiden sich nur grafisch.
+function wmPipePlateDrawing(code,variant){
+ const edge='#405466',metal='#bcc8d0',side='#8597a4',red='#ce5039';
+ const seam=d=>`<path d="${d}" stroke="${red}" stroke-width="5.5" fill="none" stroke-linecap="round"/><path d="${d}" stroke="#ffb48a" stroke-width="1.2" fill="none" stroke-dasharray="2 3"/>`;
+ const torch=(x,y,xx,yy)=>`<path d="M${x} ${y} L${xx} ${yy}" stroke="#5c7180" stroke-width="6.5" stroke-linecap="round"/><path d="M${x} ${y} L${xx} ${yy}" stroke="#e8f0f4" stroke-width="3.3" stroke-linecap="round"/>`;
+ const plate=(d)=>`<path d="${d}" fill="${metal}" stroke="${edge}" stroke-width="1.7" stroke-linejoin="round"/>`;
+ const pipe=`<path d="M28 30 L72 30 L92 47 L48 47 Z" fill="${metal}" stroke="${edge}" stroke-width="1.5"/><ellipse cx="28" cy="30" rx="10" ry="13" fill="#dfe8ec" stroke="${edge}" stroke-width="1.5"/><ellipse cx="28" cy="30" rx="5" ry="7" fill="#526a78"/><path d="M48 47 L92 47" stroke="${edge}" stroke-width="1.5"/>`;
+ let g='';
+ if(code==='PB'&&variant==='PB-vertical'){
+  g=`${plate('M8 59 L92 59 L112 69 L28 69 Z')}<path d="M47 20 L72 20 L72 58 L47 58 Z" fill="${metal}" stroke="${edge}" stroke-width="1.6"/><ellipse cx="59.5" cy="20" rx="12.5" ry="5" fill="#e3eaee" stroke="${edge}" stroke-width="1.5"/><ellipse cx="59.5" cy="20" rx="7" ry="3" fill="#526a78"/>${seam('M45 59 Q59 66 75 59')}${torch(9,28,46,57)}`;
+ }else if(code==='PA'){
+  g=`${plate('M8 59 L90 59 L111 72 L29 72 Z')}<g transform="rotate(-28 59 54)"><path d="M48 15 L70 15 L70 59 L48 59 Z" fill="${metal}" stroke="${edge}" stroke-width="1.5"/><ellipse cx="59" cy="15" rx="11" ry="5" fill="#dce5e9" stroke="${edge}" stroke-width="1.4"/><ellipse cx="59" cy="15" rx="6" ry="3" fill="#506675"/></g>${seam('M47 58 Q59 65 74 58')}${torch(38,7,51,59)}<path d="M94 31 q12 5 3 15" fill="none" stroke="#1689cb" stroke-width="2"/>`;
+ }else if(code==='PD'){
+  g=`${plate('M7 14 L95 14 L111 25 L23 25 Z')}<path d="M44 24 L72 24 L72 65 L44 65 Z" fill="${metal}" stroke="${edge}" stroke-width="1.5"/><ellipse cx="58" cy="65" rx="14" ry="5" fill="#e0e9ed" stroke="${edge}" stroke-width="1.4"/><ellipse cx="58" cy="65" rx="8" ry="3" fill="#526a78"/>${seam('M44 25 Q58 31 73 25')}${torch(111,67,72,28)}`;
+ }else{
+  // PB waagerecht, PH/PJ waagerecht mit vertikaler Rundnaht an festem Rohr.
+  g=`${plate('M82 12 L99 18 L99 71 L82 65 Z')}${plate('M82 12 L82 65 L36 65 L36 12 Z')}<g transform="translate(0 2)">${pipe}</g>${seam('M77 35 Q87 45 78 54')}${torch(code==='PJ'?12:112,code==='PJ'?68:5,79,code==='PJ'?53:36)}`;
+  if(code==='PH'||code==='PJ')g+=`<path d="M109 ${code==='PH'?64:15} V${code==='PH'?21:65} m-5 ${code==='PH'?6:-6} l5 ${code==='PH'?-6:6} l5 ${code==='PH'?6:-6}" fill="none" stroke="#1689cb" stroke-width="2"/>`;
+ }
+ return `<svg viewBox="0 0 120 80" role="img" aria-label="Rohr-Blech-Kehlnaht ${code}">${g}</svg>`;
+}
 function wmPositionDrawing(code,form,joint){
  // Individuelle, schematische 3D-Zeichnungen für die Lageauswahl.
  const metal='#b9c4cd',side='#8999a7',edge='#435669',bead='#dc5637';
@@ -477,16 +500,30 @@ function wmRenderPositionPicker(editor){
  const w=db[active].wps;
  const panel=document.createElement('div');panel.className='wm-position-picker';
  pos.closest('label').after(panel);pos.closest('label').style.display='none';
- const draw=()=>{
+ const getContext=()=>{
    const forms=[0,1].map(i=>editor.querySelector(`[data-path="base_materials.${i}.form"]`)?.value||w.base_materials[i]?.form||'Blech');
-   const form=forms.includes('Rohr')?'Rohr':'Blech';
-   const joint=editor.querySelector('#wmJointClass')?.value|| (w.joint.type==='Kehlnaht'?'FW':'BW');
-   const list=WM_POSITIONS[form+'-'+joint]||WM_POSITIONS['Blech-BW'];
-   pos.innerHTML=list.map(([code])=>`<option value="${code}">${code}</option>`).join('');pos.value=list.some(x=>x[0]===w.process.position)?w.process.position:list[0][0];w.process.position=pos.value;
-   panel.innerHTML=`<h4>Schweißposition · ${form} / ${joint}</h4><div class="wm-position-grid">${list.map(([code,name])=>`<button type="button" class="wm-position-card ${pos.value===code?'selected':''}" data-wm-pos="${code}">${wmPositionDrawing(code,form,joint)}<b>${code}</b><small>${name}</small></button>`).join('')}</div><p>Schematische Vorschau. Position und Schweißlage vor Freigabe fachlich prüfen.</p>`;
-   panel.querySelectorAll('[data-wm-pos]').forEach(b=>b.addEventListener('click',()=>{pos.innerHTML=list.map(([code])=>`<option value="${code}">${code}</option>`).join('');pos.value=b.dataset.wmPos;w.process.position=pos.value;draw()}));
+   const joint=editor.querySelector('#wmJointClass')?.value||(w.joint.type==='Kehlnaht'?'FW':'BW');
+   const form=joint==='FW'&&forms.includes('Rohr')&&forms.includes('Blech')?'Rohr-Blech':forms.includes('Rohr')?'Rohr':'Blech';
+   return {form,joint,list:WM_POSITIONS[form+'-'+joint]||WM_POSITIONS['Blech-BW']};
  };
- editor.querySelectorAll('[data-path$=".form"],#wmJointClass,#wmJointShape').forEach(el=>el.addEventListener('change',()=>{const code=pos.value;const forms=[0,1].map(i=>editor.querySelector(`[data-path="base_materials.${i}.form"]`)?.value||'Blech');const joint=editor.querySelector('#wmJointClass')?.value||'BW';const valid=WM_POSITIONS[(forms.includes('Rohr')?'Rohr':'Blech')+'-'+joint]||[];if(!valid.some(x=>x[0]===code)){pos.innerHTML=valid.map(([v])=>`<option value="${v}">${v}</option>`).join('');pos.value=valid[0]?.[0]||'PA';w.process.position=pos.value;}draw()}));
+ const draw=()=>{
+   const {form,joint,list}=getContext();
+   if(!list.some(([code])=>code===w.process.position)){w.process.position=list[0][0];w.process.position_variant='';}
+   if(form==='Rohr-Blech'&&joint==='FW'&&w.process.position==='PB'&&!['PB-horizontal','PB-vertical'].includes(w.process.position_variant))w.process.position_variant='PB-horizontal';
+   pos.innerHTML=[...new Set(list.map(x=>x[0]))].map(code=>`<option value="${code}">${code}</option>`).join('');pos.value=w.process.position;
+   panel.innerHTML=`<h4>Schweißposition · ${form} / ${joint}</h4><div class="wm-position-grid">${list.map(([code,name,variant])=>{
+     const selected=w.process.position===code&&(!variant||w.process.position_variant===variant);
+     const svg=form==='Rohr-Blech'&&joint==='FW'?wmPipePlateDrawing(code,variant):wmPositionDrawing(code,form,joint);
+     return `<button type="button" class="wm-position-card ${selected?'selected':''}" data-wm-pos="${code}" data-wm-variant="${variant||''}" aria-pressed="${selected}">${svg}<b>${code}</b><small>${name}</small></button>`;
+   }).join('')}</div><p>Schematische Vorschau nach der Referenz. Schweißposition vor Freigabe fachlich prüfen.</p>`;
+   panel.querySelectorAll('[data-wm-pos]').forEach(button=>button.addEventListener('click',()=>{
+     w.process.position=button.dataset.wmPos;
+     w.process.position_variant=button.dataset.wmVariant||'';
+     pos.value=w.process.position;
+     draw();
+   }));
+ };
+ editor.querySelectorAll('[data-path$=".form"],#wmJointClass,#wmJointShape').forEach(el=>el.addEventListener('change',draw));
  draw();
 }
 const wm26OldRender=render;
