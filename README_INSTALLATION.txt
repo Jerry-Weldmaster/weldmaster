@@ -1,14 +1,18 @@
-WeldMaster PWA 3.0 – Sammelupdate (11.11.2026)
+WeldMaster PWA 3.1 - Installation und Hinweise
 
-Installation: Alle 7 Dateien dieses ZIPs gemeinsam ins Stammverzeichnis des GitHub-Repositories hochladen. Bestehende Dateien überschreiben. Anschließend die App neu öffnen; bei iPad/Safari ggf. Cache aktualisieren bzw. App neu starten.
+1. ZIP entpacken. Alle 7 Dateien in GitHub Repository Jerry-Weldmaster/weldmaster nach main hochladen und bestehende Dateien ersetzen.
+2. In Safari ggf. App neu laden (bei altem Stand einmal schließen/erneut öffnen).
+3. Bestehende WPS bleiben im lokalen Speicher dieses Browsers; vorher zur Sicherheit „Alle WPS exportieren“.
 
-NEU: Freigegebene 3D-Vorschaubilder statt der bisherigen vereinfachten SVG-Zeichnungen für die vier geprüften Position-Gruppen:
-- Blech-Stumpfnaht: PA, PC, PE, PF, PG
-- Blech-Kehlnaht: PA, PB, PD, PF, PG
-- Rohr-Stumpfnaht: PA, PC, PH, H-L045, J-L045
-- Rohr-Blech-Kehlnaht: PB, PJ, PH, H-L045, J-L045
-Bei den Rohr-Blech-Kehlnähten gelten die vom Nutzer zuletzt freigegebenen 3D-Vorlagen mit den Pfeilen entlang der Schweißnähte.
+NEU:
+- Capilla-Produkte: kuratierte Auswahl Stahl und CrNi mit TÜV-/DB-Nummern aus Capilla-Katalog 09/2023, S. 437 (historisch, Gültigkeit NICHT geprüft).
+- Für Böhler, ESAB, Lincoln Electric bleibt manuelle Eingabe bestehen, keine fiktiven Produktzulassungen.
+- WPQR-Verwaltung lokal: manuelle Erfassung, Bearbeiten, Löschen, JSON Import/Export und WPS-Zuordnung.
+- Plausibilitätsvergleich Verfahren, Werkstoffgruppe, Dicke, Position, KEINE normative Freigabe.
+- Formularlayout für Gültigkeit und Nachweisdokument auf iPad verbessert.
+- WPQR-Verknüpfung und Produktquelle in WPS-PDF-Vorschau.
 
-X-Naht: Obere und untere Fertignaht spiegelbildlich, mit gleicher Nahtüberhöhung (Live-Skizze und PDF-Druckvorschau).
-
-Die Vorschaubilder sind innerhalb der index.html offline eingebettet, es bleiben deshalb sieben Dateien. Bestehende WPS werden nicht gelöscht. Die Bildkarten zeigen Referenzstellungen, die tatsächliche WPS-Freigabe und normative Einordnung erfordern weiterhin fachliche Prüfung.
+WICHTIG: WPQR-Register separat lokal gespeichert: eigene JSON-Exportfunktion benutzen.
+Keine hochgeladenen Nachweis-PDFs werden in der App gespeichert; das Dokumentfeld ist eine Referenz.
+Zulassungen aus historischen Katalogen müssen auf aktuelle Gültigkeit geprüft werden.
+Freigabe der WPS und normgerechte Geltungsbereichsauslegung erfolgen ausschließlich durch fachlich zuständige Personen.
