@@ -54,6 +54,13 @@ html[data-theme="dark"] .print-controls button{background:#fff;color:#183c61}
 #wm31WpqrPanel{margin-top:14px;border:1px solid #b7cadc;border-radius:10px;padding:9px}#wm31WpqrPanel summary{cursor:pointer;font-weight:700}
 html[data-theme=dark] .wm31-box{background:#223344;color:#e5f0fa;border-color:#547087}html[data-theme=dark] .wm31-note{color:#c5d5e4}html[data-theme=dark] .wm31-result{background:#493d2e;color:#ffe9ca}
 @media(max-width:760px){.catalog-approvals .grid,.wm31-qualification-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* WeldMaster 3.1.1: iPad Safari: qualification controls never share a row. */
+#wm31Qual .wm31-qualification-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:18px!important;align-items:stretch!important;width:100%;min-width:0}
+#wm31Qual .wm31-qualification-grid > label{grid-column:1/-1!important;display:block!important;min-width:0!important;width:100%!important;max-width:100%!important;margin:0!important;overflow:visible!important}
+#wm31Qual .wm31-qualification-grid input,#wm31Qual .wm31-qualification-grid select,#wm31Qual .wm31-qualification-grid textarea{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;margin-top:7px!important;font-size:16px!important;line-height:1.35!important;min-height:46px!important}
+#wm31Qual .wm31-qualification-grid input[type=date]{-webkit-appearance:auto;appearance:auto;padding-inline:10px;min-height:48px!important}
+#wm31Qual .wm31-qualification-grid [data-path="qualification.wpqr_id"]{min-height:48px!important}
 </style></head><body><header><h1>⚙ WeldMaster</h1><p>WPS-Verwaltung · lokale Speicherung · Entwicklungsversion</p></header><div class="wrap"><aside class="panel"><div class="head"><h2>Meine WPS</h2><span id="count" class="muted"></span></div><details id="wmSettings" open><summary>⚙ Firmeneinstellungen & Design</summary><div class="wm-settings"><label>Firmenname für neue WPS <input id="wmDefaultCompany" type="text" placeholder="Firmenname" oninput="saveWmDefaultCompany(this.value)"></label><label>Ort für neue WPS <input id="wmDefaultCity" type="text" placeholder="Ort" oninput="saveWmDefaultCity(this.value)"></label><label>Design <select id="wmTheme" onchange="setWmTheme(this.value)"><option value="dark">Dunkel</option><option value="light">Hell</option><option value="auto">Automatisch</option></select></label><label>Firmenlogo auswählen <input id="wmLogoInput" type="file" accept="image/png,image/jpeg,image/webp" onchange="uploadWmLogo(event)"></label><button class="secondary" onclick="removeWmLogo()">Logo entfernen</button><img id="wmLogoPreview" class="wm-logo-preview" alt="Firmenlogo" hidden></div><p class="muted">Das Logo wird nur auf diesem Gerät gespeichert. Für die Datensicherung separat aufbewahren.</p></details><div id="list"></div><div class="toolbar"><button onclick="newWps()">+ Neue WPS</button><button class="secondary" onclick="duplicate()">Duplizieren</button></div><div class="toolbar"><label class="filebutton secondary">JSON importieren<input type="file" accept=".json,application/json" onchange="importFile(event)"></label><button class="secondary" onclick="exportAll()">Alle exportieren</button></div><p class="muted">Speicherung erfolgt in diesem Browser auf diesem Gerät. Für Sicherungen regelmäßig JSON exportieren.</p></aside><main class="panel"><div class="head"><h2>WPS bearbeiten</h2><span class="pill">Entwurf / nicht freigegeben</span></div><div id="editor"></div><div class="toolbar"><button onclick="save()">Änderungen speichern</button><button class="secondary" onclick="exportOne()">WPS exportieren</button><button class="danger" onclick="removeWps()">Löschen</button></div><div class="status" id="status" aria-live="polite"></div></main></div><footer>WeldMaster · Kein Cloud-Sync. Daten können bei Löschung der Browserdaten verloren gehen. Keine automatische technische oder normative Freigabe.</footer><script>
 const seed={"schema_version": "1.0", "app": "WeldMaster", "wps": {"number": "WELD-135-001", "revision": "0", "company": "Weldgod", "author": "Max Mustermann", "status": "Entwurf / nicht freigegeben", "process": {"number": "135", "name": "MAG", "execution": "manuell", "polarity": "DC+", "arc": "Kurzlichtbogen", "position": "PA"}, "joint": {"type": "V-Stumpfnaht", "preparation": ["Gereinigt und gebürstet"], "thickness_mm": 10, "opening_angle_deg": 60, "root_gap_mm": 2, "land_mm": 0, "face_reinforcement_mm": 1.5, "root_reinforcement_mm": 1, "misalignment_mm": 0}, "base_materials": [{"designation": "S355JR", "group": "1.2", "thickness_mm": 10, "form": "Blech", "outer_diameter_mm": 60.3}, {"designation": "S355JR", "group": "1.2", "thickness_mm": 10, "form": "Blech", "outer_diameter_mm": 60.3}], "filler": {"designation": "G 42 4 M21 3Si1", "standard": "EN ISO 14341-A", "diameter_mm": 1.0, "manufacturer": "Capilla"}, "shielding_gas": {"group": "M21", "composition": "82 % Ar / 18 % CO₂", "standard": "DIN EN ISO 14175", "flow_l_min": [10, 15], "nozzle_diameter_mm": 12, "manufacturer": "Linde", "root_shielding": false}, "passes": [{"name": "Wurzellage", "current_A": [110, 140], "voltage_V": [17, 20], "wire_feed_m_min": [3.5, 5.0], "travel_speed_cm_min": [15, 25], "technique": "Strichraupe"}], "preheat_C": 20, "interpass_max_C": 150, "stickout_mm": 12, "torch_direction": "stechend", "qualification": {"basis": "DIN EN ISO 15610", "evidence_number": "09673.07", "document": "TÜV-Kennblatt", "evidence_status": "nachweis_geprueft", "scope": null, "manual_comparison_documented": true, "notes": ""}}, "document_layout": {"page": "DIN A4", "drawing_1": "Nahtvorbereitung", "drawing_2": "Fertige Schweißnaht", "drawing_size": "klein", "caption_clearance": "separate", "approved_layout_reference": "WeldMaster_WELD-135-001_Rev0_Beschriftung_frei.pdf"}, "review_required": true};
 const KEY='weldmaster-wps-v1';let db,active;
@@ -664,4 +671,57 @@ function wm31Compare(){if(!db?.length)return;collect();const w=db[active].wps,q=
 const wm31OldRender=render;
 render=function(){wm31OldRender();wm31WpqrDraw();if(!db?.length)return;const editor=document.getElementById('editor');const w=db[active].wps;wm31ApprovalUI(editor,w);wm31QualUI(editor,w)};
 wm31WpqrDraw();render();
+</script><script>
+/* WeldMaster 3.1.1: never carry a product's approvals over to another filler or manufacturer. */
+(function(){
+  const previousRender311=render;
+  function clearProductApprovals311(w,reason){
+    if(!w || !w.filler)return;
+    const keys=['product_name','tuv_approval','db_approval','approval_source','approval_valid_until','approval_document'];
+    for(const key of keys){
+      w.filler[key]='';
+      const control=document.querySelector('#editor [data-path="filler.'+key+'"]');
+      if(control)control.value='';
+    }
+    w.filler.approval_status='nicht_hinterlegt';
+    const status=document.querySelector('#editor [data-path="filler.approval_status"]');
+    if(status)status.value='nicht_hinterlegt';
+    const catalog=document.getElementById('wm31Capilla');if(catalog)catalog.value='';
+    const hint=document.getElementById('wm311ApprovalsHint');
+    if(hint)hint.textContent=reason||'Anderen Zusatz gewählt. Produktbezogene TÜV-/DB-Nummern sind zurückgesetzt.';
+  }
+  function bindApprovals311(){
+    if(!db || !db.length || db[active]==null)return;
+    const editor=document.getElementById('editor');if(!editor)return;
+    const w=db[active].wps;
+    const maker=Array.from(editor.querySelectorAll('select')).find(el=>Array.from(el.options).some(o=>o.value==='Capilla')&&Array.from(el.options).some(o=>o.value==='Böhler'));
+    const catalogSelect=Array.from(editor.querySelectorAll('select')).find(el=>el.closest('label')?.textContent?.includes('Schweißzusatz aus Katalog'));
+    const capilla=document.getElementById('wm31Capilla');
+    const panel=editor.querySelector('.catalog-approvals');
+    if(panel){
+      const hint=document.createElement('p');hint.id='wm311ApprovalsHint';hint.className='wm31-note';
+      hint.textContent='TÜV-/DB-Angaben sind an das konkret ausgewählte Herstellerprodukt gebunden. Beim Wechsel werden alte Nummern entfernt.';
+      panel.append(hint);
+    }
+    if(maker)maker.addEventListener('change',()=>{
+      w.filler.manufacturer=maker.value;
+      clearProductApprovals311(w,'Hersteller gewechselt: Vorherige Produktzulassungen wurden entfernt. Bitte passendes Herstellerprodukt und Nachweise neu auswählen.');
+    });
+    if(catalogSelect)catalogSelect.addEventListener('change',()=>{
+      clearProductApprovals311(w,'Schweißzusatz-Klassifizierung geändert. Ohne konkret zugeordnetes Produkt keine TÜV-/DB-Zulassungsnummern.');
+    });
+    for(const key of ['designation','standard']){
+      const input=editor.querySelector('[data-path="filler.'+key+'"]');
+      if(input)input.addEventListener('change',()=>clearProductApprovals311(w,'Schweißzusatz manuell geändert: vorherige Produktzulassungen entfernt.'));
+    }
+    if(capilla)capilla.addEventListener('change',()=>{
+      if(!capilla.value){clearProductApprovals311(w,'Kein Capilla-Produkt ausgewählt: TÜV-/DB-Daten entfernt.');return;}
+      if(maker)maker.value='Capilla';
+      const hint=document.getElementById('wm311ApprovalsHint');
+      if(hint)hint.textContent='Capilla '+capilla.value+': Katalognummern 09/2023 eingesetzt. Aktuelle Gültigkeit und Einsatzbereich müssen manuell geprüft werden.';
+    });
+  }
+  render=function(){previousRender311();bindApprovals311();};
+  bindApprovals311();
+})();
 </script></body></html>

@@ -16,3 +16,5 @@ WICHTIG: WPQR-Register separat lokal gespeichert: eigene JSON-Exportfunktion ben
 Keine hochgeladenen Nachweis-PDFs werden in der App gespeichert; das Dokumentfeld ist eine Referenz.
 Zulassungen aus historischen Katalogen müssen auf aktuelle Gültigkeit geprüft werden.
 Freigabe der WPS und normgerechte Geltungsbereichsauslegung erfolgen ausschließlich durch fachlich zuständige Personen.
+
+WeldMaster 3.1.1: Qualifizierung einspaltig auf iPad; beim Hersteller- oder Zusatzwechsel werden alte TÜV-/DB-Zulassungsnummern und Produktquellen entfernt. Beim Wechsel zu einem konkreten Capilla-Produkt werden historische Katalogzulassungen neu zugeordnet.
