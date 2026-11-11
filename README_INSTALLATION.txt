@@ -18,3 +18,5 @@ Zulassungen aus historischen Katalogen müssen auf aktuelle Gültigkeit geprüft
 Freigabe der WPS und normgerechte Geltungsbereichsauslegung erfolgen ausschließlich durch fachlich zuständige Personen.
 
 WeldMaster 3.1.1: Qualifizierung einspaltig auf iPad; beim Hersteller- oder Zusatzwechsel werden alte TÜV-/DB-Zulassungsnummern und Produktquellen entfernt. Beim Wechsel zu einem konkreten Capilla-Produkt werden historische Katalogzulassungen neu zugeordnet.
+
+WeldMaster 3.1.2: PDF ergaenzt: getrennte Zusatz-Zulassung (Status, Gültig-bis, Nachweisdokument, Quelle/Datenstand), Qualifizierungs-Nachweisdatum und Gültig-bis, verknuepfte WPQR und kompakte Zusammenfassung manuell erfasster WPQR-Geltungsbereiche. Kein automatischer Nachweis der aktuellen Gültigkeit oder normativen Konformität. A4-Drucklayout verdichtet, bei umfangreichen Eintraegen Seitenanzahl in Safari prüfen.
