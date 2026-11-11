@@ -1,14 +1,14 @@
-WeldMaster 2.6
+WeldMaster PWA 3.0 – Sammelupdate (11.11.2026)
 
-Alle 7 Dateien ins Stammverzeichnis des GitHub-Pages-Repositories hochladen.
-Vorher WPS-Daten als JSON exportieren. App nach Upload in Safari neu laden.
+Installation: Alle 7 Dateien dieses ZIPs gemeinsam ins Stammverzeichnis des GitHub-Repositories hochladen. Bestehende Dateien überschreiben. Anschließend die App neu öffnen; bei iPad/Safari ggf. Cache aktualisieren bzw. App neu starten.
 
-Änderungen: Schweißpositionen mit auswählbaren Skizzen nach Blech/Rohr und BW/FW, PC-Querposition mit horizontaler Stumpfnaht; Firmenort in Einstellungen und PDF; Polung Elektrode (+/-); WIG-Wolframelektrodendurchmesser; Schutzgasbezeichnung/Reinheitsklasse; breitere durchgeschweißte I-Naht und orange Schweißnaht mit 60 % Transparenz.
+NEU: Freigegebene 3D-Vorschaubilder statt der bisherigen vereinfachten SVG-Zeichnungen für die vier geprüften Position-Gruppen:
+- Blech-Stumpfnaht: PA, PC, PE, PF, PG
+- Blech-Kehlnaht: PA, PB, PD, PF, PG
+- Rohr-Stumpfnaht: PA, PC, PH, H-L045, J-L045
+- Rohr-Blech-Kehlnaht: PB, PJ, PH, H-L045, J-L045
+Bei den Rohr-Blech-Kehlnähten gelten die vom Nutzer zuletzt freigegebenen 3D-Vorlagen mit den Pfeilen entlang der Schweißnähte.
 
-Zeichnungen sind schematisch und nicht normgeprüft.
+X-Naht: Obere und untere Fertignaht spiegelbildlich, mit gleicher Nahtüberhöhung (Live-Skizze und PDF-Druckvorschau).
 
-Version 2.7: überarbeitete Schweißpositions-Skizzen für BW/FW, symmetrische Wurzel und iPad-Datumsfeld-Layout.
-
-Version 2.8: überarbeitete Blech-BW-Positionen PA und PE sowie FW-Positionen PA, PB, PD, PE, PF und PG. SVG-Skizzen sind schematisch und fachlich zu prüfen.
-
-Version 2.9: sechs Rohr-Blech-Kehlnaht-Positionszeichnungen nach Nutzerreferenz. Zwei PB-Ansichten; beide speichern PB. Schematische Bilder, fachlich prüfen.
+Die Vorschaubilder sind innerhalb der index.html offline eingebettet, es bleiben deshalb sieben Dateien. Bestehende WPS werden nicht gelöscht. Die Bildkarten zeigen Referenzstellungen, die tatsächliche WPS-Freigabe und normative Einordnung erfordern weiterhin fachliche Prüfung.
