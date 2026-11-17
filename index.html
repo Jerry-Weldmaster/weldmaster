@@ -61,7 +61,45 @@ html[data-theme=dark] .wm31-box{background:#223344;color:#e5f0fa;border-color:#5
 #wm31Qual .wm31-qualification-grid input,#wm31Qual .wm31-qualification-grid select,#wm31Qual .wm31-qualification-grid textarea{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;margin-top:7px!important;font-size:16px!important;line-height:1.35!important;min-height:46px!important}
 #wm31Qual .wm31-qualification-grid input[type=date]{-webkit-appearance:auto;appearance:auto;padding-inline:10px;min-height:48px!important}
 #wm31Qual .wm31-qualification-grid [data-path="qualification.wpqr_id"]{min-height:48px!important}
-</style></head><body><header><h1>⚙ WeldMaster</h1><p>WPS-Verwaltung · lokale Speicherung · Entwicklungsversion</p></header><div class="wrap"><aside class="panel"><div class="head"><h2>Meine WPS</h2><span id="count" class="muted"></span></div><details id="wmSettings" open><summary>⚙ Firmeneinstellungen & Design</summary><div class="wm-settings"><label>Firmenname für neue WPS <input id="wmDefaultCompany" type="text" placeholder="Firmenname" oninput="saveWmDefaultCompany(this.value)"></label><label>Ort für neue WPS <input id="wmDefaultCity" type="text" placeholder="Ort" oninput="saveWmDefaultCity(this.value)"></label><label>Design <select id="wmTheme" onchange="setWmTheme(this.value)"><option value="dark">Dunkel</option><option value="light">Hell</option><option value="auto">Automatisch</option></select></label><label>Firmenlogo auswählen <input id="wmLogoInput" type="file" accept="image/png,image/jpeg,image/webp" onchange="uploadWmLogo(event)"></label><button class="secondary" onclick="removeWmLogo()">Logo entfernen</button><img id="wmLogoPreview" class="wm-logo-preview" alt="Firmenlogo" hidden></div><p class="muted">Das Logo wird nur auf diesem Gerät gespeichert. Für die Datensicherung separat aufbewahren.</p></details><div id="list"></div><div class="toolbar"><button onclick="newWps()">+ Neue WPS</button><button class="secondary" onclick="duplicate()">Duplizieren</button></div><div class="toolbar"><label class="filebutton secondary">JSON importieren<input type="file" accept=".json,application/json" onchange="importFile(event)"></label><button class="secondary" onclick="exportAll()">Alle exportieren</button></div><p class="muted">Speicherung erfolgt in diesem Browser auf diesem Gerät. Für Sicherungen regelmäßig JSON exportieren.</p></aside><main class="panel"><div class="head"><h2>WPS bearbeiten</h2><span class="pill">Entwurf / nicht freigegeben</span></div><div id="editor"></div><div class="toolbar"><button onclick="save()">Änderungen speichern</button><button class="secondary" onclick="exportOne()">WPS exportieren</button><button class="danger" onclick="removeWps()">Löschen</button></div><div class="status" id="status" aria-live="polite"></div></main></div><footer>WeldMaster · Kein Cloud-Sync. Daten können bei Löschung der Browserdaten verloren gehen. Keine automatische technische oder normative Freigabe.</footer><script>
+</style>
+<style>
+/* WeldMaster 4.0: device inventory, sample-WPS fields, Senger layout with WeldMaster colors */
+#wm40Devices{margin:14px 0;border:1px solid #b7cadc;border-radius:10px;padding:10px;min-width:0}
+#wm40Devices summary{font-weight:700;cursor:pointer}
+.wm40-row{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}
+.wm40-row button{font-size:12px;padding:8px 10px}
+.wm40-device-card{border:1px solid #d5e2ee;border-radius:8px;padding:9px;margin:8px 0;background:#f7faff;overflow-wrap:anywhere}
+.wm40-device-card strong{font-size:13px}.wm40-device-card small{display:block;color:#62768a}
+.wm40-choose{border:1px solid #b9d0e5;border-radius:10px;padding:12px;margin:10px 0;min-width:0}
+.wm40-choose legend{color:#174369}.wm40-choose label{display:flex;align-items:center;gap:9px;margin:7px 0;font-weight:500}
+.wm40-choose input[type=checkbox]{width:auto;margin:0;flex:none}
+.wm40-extra{margin-top:12px}.wm40-extra label{min-width:0}
+.wm40-hint{font-size:12px;color:#5d7088;line-height:1.4}
+html[data-theme=dark] .wm40-device-card,html[data-theme=dark] #wm40Devices,html[data-theme=dark] .wm40-choose{background:#263b4d;border-color:#58718a;color:#e9f1f9}
+html[data-theme=dark] .wm40-device-card small,html[data-theme=dark] .wm40-hint{color:#c0cbd9}
+.print-sheet .wm40-header{border-bottom:3px solid #e79c4b;padding-bottom:5px}
+.print-sheet .wm40-header h1{font-size:17px;color:#173d60}
+.print-sheet .wm40-status{font-size:9px;background:#f7f3ed;border:1px solid #dbc5a9;padding:4px 6px;margin:5px 0}
+.print-sheet .wm40-pair{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.print-sheet .wm40-pair>section{min-width:0}
+.print-sheet .wm40-sectiontitle{font-size:10px;font-weight:bold;background:#173d60;color:white;padding:5px 7px;margin:7px 0 3px}
+.print-sheet .wm40-gridtable{table-layout:fixed}
+.print-sheet .wm40-gridtable th{width:21%}
+.print-sheet .wm40-gridtable td{width:29%;overflow-wrap:anywhere}
+.print-sheet .wm40-signatures{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;font-size:9px;margin-top:8px}
+.print-sheet .wm40-signatures>div{border-top:1px solid #90a7bd;padding-top:3px;min-height:20px;overflow-wrap:anywhere}
+.print-sheet .wm40-devices{font-size:8.5px;line-height:1.25}
+@media print{
+ .print-sheet .wm40-sectiontitle{padding:3px 5px;margin:4px 0 2px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .print-sheet .wm40-header h1{font-size:15px}
+ .print-sheet .wm40-status{padding:2px 4px;margin:2px 0}
+ .print-sheet .wm40-signatures{margin-top:5px;font-size:8px}
+ .print-sheet .drawings .drawing svg{height:86px!important}
+ .print-sheet .wm40-pair{gap:5px}
+ .print-sheet .wm40-devices{font-size:8px}
+}
+</style>
+</head><body><header><h1>⚙ WeldMaster</h1><p>WPS-Verwaltung · lokale Speicherung · Entwicklungsversion</p></header><div class="wrap"><aside class="panel"><div class="head"><h2>Meine WPS</h2><span id="count" class="muted"></span></div><details id="wmSettings" open><summary>⚙ Firmeneinstellungen & Design</summary><div class="wm-settings"><label>Firmenname für neue WPS <input id="wmDefaultCompany" type="text" placeholder="Firmenname" oninput="saveWmDefaultCompany(this.value)"></label><label>Ort für neue WPS <input id="wmDefaultCity" type="text" placeholder="Ort" oninput="saveWmDefaultCity(this.value)"></label><label>Design <select id="wmTheme" onchange="setWmTheme(this.value)"><option value="dark">Dunkel</option><option value="light">Hell</option><option value="auto">Automatisch</option></select></label><label>Firmenlogo auswählen <input id="wmLogoInput" type="file" accept="image/png,image/jpeg,image/webp" onchange="uploadWmLogo(event)"></label><button class="secondary" onclick="removeWmLogo()">Logo entfernen</button><img id="wmLogoPreview" class="wm-logo-preview" alt="Firmenlogo" hidden></div><p class="muted">Das Logo wird nur auf diesem Gerät gespeichert. Für die Datensicherung separat aufbewahren.</p></details><div id="list"></div><div class="toolbar"><button onclick="newWps()">+ Neue WPS</button><button class="secondary" onclick="duplicate()">Duplizieren</button></div><div class="toolbar"><label class="filebutton secondary">JSON importieren<input type="file" accept=".json,application/json" onchange="importFile(event)"></label><button class="secondary" onclick="exportAll()">Alle exportieren</button></div><p class="muted">Speicherung erfolgt in diesem Browser auf diesem Gerät. Für Sicherungen regelmäßig JSON exportieren.</p></aside><main class="panel"><div class="head"><h2>WPS bearbeiten</h2><span class="pill">Entwurf / nicht freigegeben</span></div><div id="editor"></div><div class="toolbar"><button onclick="save()">Änderungen speichern</button><button class="secondary" onclick="exportOne()">WPS exportieren</button><button class="danger" onclick="removeWps()">Löschen</button></div><div class="status" id="status" aria-live="polite"></div></main></div><footer>WeldMaster · Kein Cloud-Sync. Daten können bei Löschung der Browserdaten verloren gehen. Keine automatische technische oder normative Freigabe.</footer><script>
 const seed={"schema_version": "1.0", "app": "WeldMaster", "wps": {"number": "WELD-135-001", "revision": "0", "company": "Weldgod", "author": "Max Mustermann", "status": "Entwurf / nicht freigegeben", "process": {"number": "135", "name": "MAG", "execution": "manuell", "polarity": "DC+", "arc": "Kurzlichtbogen", "position": "PA"}, "joint": {"type": "V-Stumpfnaht", "preparation": ["Gereinigt und gebürstet"], "thickness_mm": 10, "opening_angle_deg": 60, "root_gap_mm": 2, "land_mm": 0, "face_reinforcement_mm": 1.5, "root_reinforcement_mm": 1, "misalignment_mm": 0}, "base_materials": [{"designation": "S355JR", "group": "1.2", "thickness_mm": 10, "form": "Blech", "outer_diameter_mm": 60.3}, {"designation": "S355JR", "group": "1.2", "thickness_mm": 10, "form": "Blech", "outer_diameter_mm": 60.3}], "filler": {"designation": "G 42 4 M21 3Si1", "standard": "EN ISO 14341-A", "diameter_mm": 1.0, "manufacturer": "Capilla"}, "shielding_gas": {"group": "M21", "composition": "82 % Ar / 18 % CO₂", "standard": "DIN EN ISO 14175", "flow_l_min": [10, 15], "nozzle_diameter_mm": 12, "manufacturer": "Linde", "root_shielding": false}, "passes": [{"name": "Wurzellage", "current_A": [110, 140], "voltage_V": [17, 20], "wire_feed_m_min": [3.5, 5.0], "travel_speed_cm_min": [15, 25], "technique": "Strichraupe"}], "preheat_C": 20, "interpass_max_C": 150, "stickout_mm": 12, "torch_direction": "stechend", "qualification": {"basis": "DIN EN ISO 15610", "evidence_number": "09673.07", "document": "TÜV-Kennblatt", "evidence_status": "nachweis_geprueft", "scope": null, "manual_comparison_documented": true, "notes": ""}}, "document_layout": {"page": "DIN A4", "drawing_1": "Nahtvorbereitung", "drawing_2": "Fertige Schweißnaht", "drawing_size": "klein", "caption_clearance": "separate", "approved_layout_reference": "WeldMaster_WELD-135-001_Rev0_Beschriftung_frei.pdf"}, "review_required": true};
 const KEY='weldmaster-wps-v1';let db,active;
 function clone(x){return JSON.parse(JSON.stringify(x))}
@@ -148,7 +186,7 @@ function otherDiagram(j,finished){
    const right=type==='I-Stumpfnaht'?`M${c+half} ${top} H295 V${y} H${c+half} Z`:type==='Y-Stumpfnaht'?`M${c+half+upper} ${top} H295 V${y} H${c+half} V${y-land*sc} Z`:`M${c+half+upper} ${top} H295 V${y} H${c+half+lower} L${c+half} ${mid} Z`;
    metal=`<path d="${left} ${right}" fill="#b6c2cd" stroke="#60758a"/>`;
    const penetration=Math.max(4,Math.min(18,Math.max(1.4,t*0.8)*sc));const lx=type==='I-Stumpfnaht'?c-half-penetration:c-half-upper,rx=type==='I-Stumpfnaht'?c+half+penetration:c+half+upper;const rootHalf=Math.max(half+Math.min(penetration,9),half+2);
-   weld=`<path d="M${lx} ${top} Q${c} ${top-cap*sc} ${rx} ${top} L${type==='I-Stumpfnaht'?rx:c+half} ${type==='X-Stumpfnaht'?mid:y} L${c+rootHalf} ${y} C${c+rootHalf*.55} ${y+root*sc*.7} ${c+rootHalf*.35} ${y+root*sc} ${c} ${y+root*sc} C${c-rootHalf*.35} ${y+root*sc} ${c-rootHalf*.55} ${y+root*sc*.7} ${c-rootHalf} ${y} L${c-half} ${type==='X-Stumpfnaht'?mid:y} Z" fill="${weldColor}" fill-opacity="0.4" stroke="#995b23"/>`;
+   weld=`<path d="M${lx} ${top} Q${c} ${top-cap*sc} ${rx} ${top} L${type==='I-Stumpfnaht'?rx:c+half} ${type==='X-Stumpfnaht'?mid:y} L${c+rootHalf} ${y} C${c+rootHalf*.75} ${y+root*sc*.5} ${c+rootHalf*.44} ${y+root*sc} ${c} ${y+root*sc} C${c-rootHalf*.44} ${y+root*sc} ${c-rootHalf*.75} ${y+root*sc*.5} ${c-rootHalf} ${y} L${c-half} ${type==='X-Stumpfnaht'?mid:y} Z" fill="${weldColor}" fill-opacity="0.4" stroke="#995b23"/>`;
    if(type==='X-Stumpfnaht'){
      // X-Naht: obere und untere Raupe identisch und spiegelbildlich.
      // Ein gemeinsames aussenliegendes Nahtprofil, gleiche Nahtüberhöhung an beiden Oberflächen.
@@ -168,7 +206,7 @@ function diagram(j,finished){if(j.type!=='V-Stumpfnaht')return otherDiagram(j,fi
  const metal=`<path d="M5 ${top} H${xl} L${il} ${shoulder} V${y} H5 Z M${xr} ${top} H295 V${y} H${ir} V${shoulder} Z" fill="#b6c2cd" stroke="#60758a" stroke-width="1"/>`;
  // Wurzelüberhöhung als sanfte Rundung UNTER der Blechunterkante; Maß senkrecht.
  const rootBottom=y+Math.max(0,root)*scale;
- const weld=`<path d="M${xl} ${top} Q${cx} ${top-cap*scale} ${xr} ${top} L${ir} ${shoulder} V${y} C${ir} ${y+root*scale*.58} ${cx+half*.5} ${rootBottom} ${cx} ${rootBottom} C${cx-half*.5} ${rootBottom} ${il} ${y+root*scale*.58} ${il} ${y} V${shoulder} Z" fill="#e79c4b" fill-opacity="0.4" stroke="#995b23" stroke-width="1.15"/>`;
+ const weld=`<path d="M${xl} ${top} Q${cx} ${top-cap*scale} ${xr} ${top} L${ir} ${shoulder} V${y} C${ir} ${y+root*scale*.52} ${cx+half*.56} ${rootBottom} ${cx} ${rootBottom} C${cx-half*.56} ${rootBottom} ${il} ${y+root*scale*.52} ${il} ${y} V${shoulder} Z" fill="#e79c4b" fill-opacity="0.4" stroke="#995b23" stroke-width="1.15"/>`;
  const baseline=finished?`<path d="M${il-13} ${y} H${il-3} M${ir+3} ${y} H${ir+36}" fill="none" stroke="#60758a" stroke-width="1"/>`:'';
  const caption=finished?`<text x="150" y="13" text-anchor="middle" font-size="10" fill="#1b5c96">Nahtüberhöhung ${fmt(cap)} mm</text><path d="M${ir+18} ${y}h12 M${ir+18} ${rootBottom}h12 M${ir+25} ${y}v${Math.max(0,root)*scale}" stroke="#1b5c96" fill="none" stroke-width="1.2"/><text x="${ir+34}" y="${rootBottom+3}" font-size="9" fill="#1b5c96">${fmt(root)} mm</text>`:`<text x="150" y="14" text-anchor="middle" font-size="10" fill="#1b5c96">Öffnungswinkel ${fmt(a)}°</text><text x="150" y="116" text-anchor="middle" font-size="10" fill="#1b5c96">Wurzelspalt ${fmt(g)} mm</text>`;
  return `<svg viewBox="0 0 300 125" xmlns="http://www.w3.org/2000/svg">${finished?`<defs><pattern id="wmVhatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><line x1="0" y1="0" x2="0" y2="7" stroke="#98551d" stroke-opacity="0.24" stroke-width="1"/></pattern></defs>`:''}${metal}${baseline}${finished?weld+weld.replace('fill="#e79c4b"','fill="url(#wmVhatch)"').replace('fill-opacity="0.4"','fill-opacity="1"').replace('stroke="#995b23"','stroke="none"'):''}${caption}</svg>`;
@@ -750,4 +788,159 @@ wm31WpqrDraw();render();
   render=function(){previousRender311();bindApprovals311();};
   bindApprovals311();
 })();
-</script></body></html>
+</script>
+<script>
+/* WeldMaster 4.0 · Geräte zentral verwalten, jede WPS behält den zugeordneten Gerätestand. */
+(function(){
+'use strict';
+const DEVICE_KEY='weldmaster-company-devices-v4';
+let equipment=[];
+try{let stored=JSON.parse(localStorage.getItem(DEVICE_KEY)||'[]');equipment=Array.isArray(stored)?stored:[]}catch(e){equipment=[]}
+function persistDevices(){try{localStorage.setItem(DEVICE_KEY,JSON.stringify(equipment));return true}catch(e){alert('Schweißgeräte konnten nicht gespeichert werden. Bitte Browser-Speicher prüfen.');return false}}
+function normalized(s){return String(s??'').trim()}
+function record(){return db&&db.length&&active>=0?db[active].wps:null}
+function defaults(w){
+ if(!w)return;
+ if(!Array.isArray(w.welding_equipment))w.welding_equipment=[];
+ if(!w.execution_details||typeof w.execution_details!=='object')w.execution_details={};
+ if(!w.shielding_gas||typeof w.shielding_gas!=='object')w.shielding_gas={};
+ if(!w.qualification||typeof w.qualification!=='object')w.qualification={};
+}
+function inventoryUI(){
+ let aside=document.querySelector('.wrap aside');if(!aside)return;
+ let panel=document.getElementById('wm40Devices');if(!panel){panel=document.createElement('details');panel.id='wm40Devices';const wpqr=document.getElementById('wm31WpqrPanel');if(wpqr)wpqr.before(panel);else aside.append(panel)}
+ const open=panel.open;
+ panel.innerHTML=`<summary>⚡ Schweißgeräte (${equipment.length})</summary>
+ <p class="wm40-hint">Firmengeräte einmalig anlegen. Eine WPS kann mehrere Geräte zugeordnet bekommen.</p>
+ <div class="wm40-row"><button type="button" id="wm40Add">+ Gerät anlegen</button><button class="secondary" type="button" id="wm40Export">Geräte sichern</button></div>
+ <label style="font-size:12px">Geräte-JSON importieren<input id="wm40Import" type="file" accept=".json,application/json"></label>
+ <div id="wm40InventoryList">${equipment.length?equipment.map(d=>`<div class="wm40-device-card"><strong>${esc(d.manufacturer)} ${esc(d.model)}</strong><small>${esc(d.number)} · ${esc(d.processes)}</small><div class="wm40-row"><button type="button" class="secondary" data-wm40-edit="${esc(d.id)}">Bearbeiten</button><button type="button" class="danger" data-wm40-delete="${esc(d.id)}">Löschen</button></div></div>`).join(''):'<p class="wm40-hint">Noch keine Firmengeräte hinterlegt.</p>'}</div><div id="wm40DeviceForm"></div>`;
+ panel.open=open;
+ panel.querySelector('#wm40Add').onclick=()=>editDevice(null);
+ panel.querySelectorAll('[data-wm40-edit]').forEach(b=>b.onclick=()=>editDevice(b.dataset.wm40Edit));
+ panel.querySelectorAll('[data-wm40-delete]').forEach(b=>b.onclick=()=>{
+  let d=equipment.find(x=>x.id===b.dataset.wm40Delete);if(!d||!confirm('Gerät '+d.manufacturer+' '+d.model+' aus der Firmenliste löschen? Bereits gespeicherte WPS behalten ihre Gerätedaten.'))return;
+  equipment=equipment.filter(x=>x.id!==d.id);if(persistDevices()){inventoryUI();render()}
+ });
+ panel.querySelector('#wm40Export').onclick=()=>download({app:'WeldMaster',kind:'company-devices',version:'4.0',collection:equipment},'WeldMaster_Schweissgeraete.json');
+ panel.querySelector('#wm40Import').onchange=async ev=>{let file=ev.target.files?.[0];if(!file)return;try{
+   const x=JSON.parse(await file.text());if(x.app!=='WeldMaster'||x.kind!=='company-devices'||!Array.isArray(x.collection)||!x.collection.every(d=>d&&typeof d.id==='string'&&typeof d.manufacturer==='string'&&typeof d.model==='string'))throw Error('Ungültiges Geräteformat');
+   for(const d of x.collection){let idx=equipment.findIndex(t=>t.id===d.id);if(idx<0)equipment.push(d);else if(confirm('Gerät '+d.manufacturer+' '+d.model+' überschreiben?'))equipment[idx]=d}
+   if(persistDevices()){inventoryUI();render()}
+  }catch(e){alert('Import fehlgeschlagen: '+e.message)}ev.target.value='';};
+}
+function editDevice(id){
+ const old=equipment.find(x=>x.id===id)||{id:'device-'+Date.now()+'-'+Math.random().toString(36).slice(2,6),manufacturer:'',model:'',number:'',processes:'141'};
+ const panel=document.getElementById('wm40Devices');panel.open=true;const target=panel.querySelector('#wm40DeviceForm');
+ target.innerHTML=`<fieldset><legend>${id?'Schweißgerät bearbeiten':'Schweißgerät anlegen'}</legend>
+ <label>Hersteller<input data-device-field="manufacturer" value="${esc(old.manufacturer)}" placeholder="z. B. Fronius"></label>
+ <label>Modell<input data-device-field="model" value="${esc(old.model)}" placeholder="z. B. TransTIG 2200"></label>
+ <label>Interne Gerätenummer<input data-device-field="number" value="${esc(old.number)}" placeholder="z. B. WIG-02"></label>
+ <label>Schweißverfahren (durch Komma getrennt)<input data-device-field="processes" value="${esc(old.processes)}" placeholder="141, 135"></label>
+ <div class="wm40-row"><button type="button" id="wm40Commit">Gerät speichern</button><button class="secondary" type="button" id="wm40Cancel">Abbrechen</button></div></fieldset>`;
+ target.querySelector('#wm40Cancel').onclick=()=>target.innerHTML='';
+ target.querySelector('#wm40Commit').onclick=()=>{
+  const d={id:old.id};target.querySelectorAll('[data-device-field]').forEach(e=>d[e.dataset.deviceField]=normalized(e.value));
+  if(!d.manufacturer||!d.model){alert('Hersteller und Modell müssen eingetragen sein.');return}
+  let idx=equipment.findIndex(x=>x.id===d.id);if(idx<0)equipment.push(d);else equipment[idx]=d;
+  if(persistDevices()){inventoryUI();render()}
+ };
+}
+function renderSelectedEquipment(editor,w){
+ defaults(w);const proc=String(w.process?.number||'');
+ const header=Array.from(editor.querySelectorAll('h3')).find(x=>x.textContent.trim()==='Schweißverfahren');
+ if(!header)return;
+ const field=document.createElement('fieldset');field.className='wm40-choose';
+ field.innerHTML='<legend>Schweißgeräte für diese WPS</legend><p class="wm40-hint">Mehrfachauswahl möglich. Beim Speichern wird der aktuelle Gerätebestand in der WPS festgehalten.</p>'+
+  (equipment.length?equipment.map(d=>{const assigned=w.welding_equipment.some(x=>x.id===d.id);const procedures=normalized(d.processes).split(/[,;\s]+/).filter(Boolean);const match=!procedures.length||procedures.includes(proc);
+   return `<label><input type="checkbox" data-wm40-id="${esc(d.id)}" ${assigned?'checked':''}><span>${esc(d.manufacturer)} ${esc(d.model)} ${d.number?'('+esc(d.number)+')':''}${!match?' · Verfahren prüfen':''}</span></label>`;
+  }).join(''):'<p class="wm40-hint">Bitte links zuerst ein Schweißgerät anlegen.</p>')+
+  (w.welding_equipment.filter(x=>!equipment.some(d=>d.id===x.id)).map(d=>`<label><input type="checkbox" data-wm40-orphan="${esc(d.id)}" checked><span>${esc(d.manufacturer)} ${esc(d.model)} · aus Firmenliste entfernt, in WPS erhalten</span></label>`).join(''));
+ header.before(field);
+ field.querySelectorAll('[data-wm40-id]').forEach(el=>el.onchange=()=>{
+  collect();const current=record();if(!current)return;defaults(current);const d=equipment.find(x=>x.id===el.dataset.wm40Id);if(!d)return;
+  current.welding_equipment=current.welding_equipment.filter(x=>x.id!==d.id);if(el.checked)current.welding_equipment.push({...d});persist();
+ });
+ field.querySelectorAll('[data-wm40-orphan]').forEach(el=>el.onchange=()=>{
+  if(el.checked)return;if(!confirm('Zuordnung dieses Geräts aus der WPS entfernen?')){el.checked=true;return}
+  w.welding_equipment=w.welding_equipment.filter(x=>x.id!==el.dataset.wm40Orphan);persist();
+ });
+}
+function extendedFields(editor,w){
+ defaults(w);
+ const head=Array.from(editor.querySelectorAll('h3')).find(x=>x.textContent.trim()==='Schweißverfahren');
+ if(!head)return;
+ const box=document.createElement('div');box.className='wm40-extra';box.innerHTML=`<h3>WPS-Zusatzangaben für den PDF-Ausdruck</h3>
+ <div class="grid">
+ <label>Name des Schweißers<input data-path="execution_details.welder" value="${esc(w.execution_details.welder||'')}"></label>
+ <label>Nahtausführung<select data-path="execution_details.weld_side"><option value="">Bitte auswählen</option><option value="ss" ${w.execution_details.weld_side==='ss'?'selected':''}>ss · einseitig geschweißt</option><option value="bs" ${w.execution_details.weld_side==='bs'?'selected':''}>bs · beidseitig geschweißt</option></select></label>
+ <label>Schweißbadsicherung<select data-path="execution_details.backing"><option value="">Bitte auswählen</option><option value="nb" ${w.execution_details.backing==='nb'?'selected':''}>nb · ohne Badsicherung</option><option value="mb" ${w.execution_details.backing==='mb'?'selected':''}>mb · Werkstoffbadsicherung</option><option value="andere" ${w.execution_details.backing==='andere'?'selected':''}>andere · siehe Bemerkung</option></select></label>
+ <label>Art der Wurzelreinigung<input data-path="execution_details.cleaning" value="${esc(w.execution_details.cleaning||'')}"></label>
+ <label>Wurzelschutzgas (Handelsname / Reinheit)<input data-path="shielding_gas.root_product" value="${esc(w.shielding_gas.root_product||'')}" placeholder="z. B. Argon 4.6"></label>
+ <label>Wurzelschutzgas-Klassifizierung<input data-path="shielding_gas.root_group" value="${esc(w.shielding_gas.root_group||'')}" placeholder="z. B. I1"></label>
+ <label>Wurzelschutz-Durchfluss von (l/min)<input type="number" step="any" data-path="shielding_gas.root_flow_min" value="${esc(w.shielding_gas.root_flow_min??'')}"></label>
+ <label>Wurzelschutz-Durchfluss bis (l/min)<input type="number" step="any" data-path="shielding_gas.root_flow_max" value="${esc(w.shielding_gas.root_flow_max??'')}"></label>
+ <label>Schweißer-Prüfungsnummer (optional)<input data-path="execution_details.welder_certificate" value="${esc(w.execution_details.welder_certificate||'')}"></label>
+ <label>Prüfer / geprüft von<input data-path="execution_details.checked_by" value="${esc(w.execution_details.checked_by||'')}"></label>
+ <label>Freigegeben von<input data-path="execution_details.approved_by" value="${esc(w.execution_details.approved_by||'')}"></label>
+ <label>WPS-Erstellungsdatum<input type="date" data-path="execution_details.created_date" value="${esc(w.execution_details.created_date||'')}"></label>
+ <label>Revisionsgrund<input data-path="execution_details.revision_reason" value="${esc(w.execution_details.revision_reason||'')}"></label>
+ <label>Weitere Hinweise<input data-path="execution_details.notes" value="${esc(w.execution_details.notes||'')}"></label>
+ </div><p class="wm40-hint">ss/bs beschreibt die Schweißseiten, nb/mb die Schweißbadsicherung. Wurzelschutzgas wird getrennt erfasst.</p>`;
+ head.before(box);
+}
+const oldRender=render;
+render=function(){
+ if(db&&db.length&&active>=0)defaults(record());
+ oldRender();inventoryUI();const w=record();if(!w)return;
+ const editor=document.getElementById('editor');renderSelectedEquipment(editor,w);extendedFields(editor,w);
+};
+// First render after extension has been registered.
+render();
+const oldShowPrint=showPrint;
+showPrint=function(){
+ const w=record();if(!w)return;defaults(w);
+ oldShowPrint();
+ const q=w.qualification||{},e=w.execution_details||{},g=w.shielding_gas||{},f=w.filler||{},j=w.joint||{};
+ const mats=w.base_materials||[];const proc=w.process||{};
+ const safe=x=>val(x??'');const r=(a,b,c,d)=>`<tr><th>${safe(a)}</th><td>${safe(b)}</td><th>${safe(c)}</th><td>${safe(d)}</td></tr>`;
+ const p=(a,b)=>`<tr><th>${safe(a)}</th><td colspan="3">${safe(b)}</td></tr>`;
+ const extras=()=>[e.weld_side,e.backing].filter(Boolean).join('-');
+ const matString=m=>joined([m?.designation,m?.group?'Gr. '+m.group:'',m?.form==='Rohr'?'Rohr Ø '+(m.outer_diameter_mm??'')+' mm / t '+(m.thickness_mm??'')+' mm':m?.thickness_mm!==undefined?'Blech '+m.thickness_mm+' mm':''],' · ');
+ const deviceLines=(w.welding_equipment||[]).map(d=>joined([d.manufacturer,d.model,d.number?'Gerätenr. '+d.number:''],' · '));
+ const positions=joined([proc.position,extras()],' · ');
+ const isTig=['141','142'].includes(String(proc.number));
+ const withGasRange=(lo,hi)=>[lo,hi].filter(x=>x!==''&&x!==null&&x!==undefined).map(x=>String(x).replace('.',',')).join('–');
+ const shielding=joined([g.product,g.group,g.composition],' / ');
+ const backing=joined([g.root_product,g.root_group],' / ');
+ const wpqr=q.wpqr_id&&typeof wm31Wpqr!=='undefined'?wm31Wpqr.find(x=>x.id===q.wpqr_id):null;
+ const print=document.getElementById('printSheet');
+ const oldDraw=print.querySelector('.drawings')?.outerHTML||'';
+ const oldQualification=print.querySelectorAll('table');
+ const original=print.innerHTML;
+ const passRows=(w.passes||[]).map((pass,i)=>`<tr><td>${i+1} · ${safe(pass.name)}</td><td>${safe(w.filler?.diameter_mm)}</td><td>${safe(safeRange(pass.current_A))}</td><td>${safe(safeRange(pass.voltage_V))}</td><td>${safe(proc.polarity)}</td>${isTig?'':`<td>${safe(safeRange(pass.wire_feed_m_min))}</td>`}<td>${safe(safeRange(pass.travel_speed_cm_min))}</td><td>${safe(pass.technique)}</td></tr>`).join('');
+ const wpqrDetails=wpqr?wm312Scope(wpqr):'';
+ const evidence=joined([q.basis,q.evidence_number],' · ');
+ const fillerStatus=(f.tuv_approval||f.db_approval||f.product_name)?wm312FillerStatus(f.approval_status):'';
+ print.innerHTML=`
+ <div class="wm40-header wm-print-head"><div id="wmPrintLogo"></div><div class="wm-print-title"><h1>Schweißanweisung (WPS)</h1><div>nach DIN EN ISO 15609-1</div></div></div>
+ <div class="wm40-status">${safe(joined([w.company,w.city],' · '))} · WPS ${safe(w.number)} · Rev. ${safe(w.revision)} · <b>ENTWURF / NICHT FREIGEGEBEN</b></div>
+ <table class="wm40-gridtable">${r('Ort',w.city,'WPS-Nr.',w.number)}${r('Verfahren',joined([proc.number,PROCESS_NAMES[proc.number]||proc.name],' · '),'Prüfer / Prüfstelle',wpqr?.examiner||'')}${r('Hersteller',w.company,'Name des Schweißers',e.welder)}${r('Grundwerkstoffgruppe',joined(mats.map(m=>m.group),' / '),'WPQR-Nummer',wpqr?.number||q.evidence_number)}${r('Werkstoff 1',matString(mats[0]),'Werkstoff 2',matString(mats[1]))}${r('Schweißposition',positions,'Nahtart',j.type==='Kehlnaht'?'FW':'BW')}${r('Vorbereitung / Reinigung',joined([...(j.preparation||[]),e.cleaning],', '),'Schweißernachweis',e.welder_certificate)}</table>
+ <div class="wm40-sectiontitle">Gestaltung der Verbindung / Schweißfolge</div>
+ <table class="wm40-gridtable">${r('Nahtform',j.type,'Schweißseiten',e.weld_side)}${r('Badsicherung',e.backing,'Wurzelspalt',emptyOrUnit(j.root_gap_mm,'mm'))}${r('Öffnungswinkel',j.type==='Kehlnaht'?'':emptyOrUnit(j.opening_angle_deg,'°'),'Steghöhe',j.type==='Kehlnaht'?'':emptyOrUnit(j.land_mm,'mm'))}${r('Nahtüberhöhung',j.type==='Kehlnaht'?'':emptyOrUnit(j.face_reinforcement_mm,'mm'),'Wurzelüberhöhung',j.type==='Kehlnaht'?'':emptyOrUnit(j.root_reinforcement_mm,'mm'))}</table>
+ ${oldDraw}
+ <div class="wm40-sectiontitle">Schweißparameter / Schweißgeräte</div>
+ <table><thead><tr><th>Lage</th><th>Zusatz Ø mm</th><th>A</th><th>V</th><th>Polung</th>${isTig?'':'<th>Draht m/min</th>'}<th>cm/min</th><th>Technik</th></tr></thead><tbody>${passRows}</tbody></table>
+ <table class="wm40-gridtable">${deviceLines.length?`<tr><th>Schweißgeräte</th><td colspan="3" class="wm40-devices">${deviceLines.map(safe).join(' · ')}</td></tr>`:p('Schweißgeräte','')}</table>
+ <div class="wm40-sectiontitle">Zusatzwerkstoff / Gase / Bedingungen</div>
+ <div class="wm40-pair"><section><table class="wm40-gridtable">${p('Schweißzusatz',joined([f.manufacturer,f.product_name||f.designation],' · '))}${p('Klassifizierung',joined([f.designation,f.standard],' / '))}${r('Zusatz Ø',emptyOrUnit(f.diameter_mm,'mm'),'Wolfram Ø',isTig?emptyOrUnit(proc.tungsten_diameter_mm,'mm'):'')}${r('TÜV',f.tuv_approval,'DB',f.db_approval)}${p('Zulassungsstatus',fillerStatus)}${p('Zulassungsquelle',f.approval_source)}${p('Zulassungsnachweis',f.approval_document)}${p('Zulassung gültig bis',wm312Date(f.approval_valid_until))}</table></section>
+ <section><table class="wm40-gridtable">${p('Schutzgas',shielding)}${p('Schutzgasmenge',safeRange(g.flow_l_min)?safeRange(g.flow_l_min)+' l/min':'')}${p('Wurzelschutz',backing)}${p('Wurzelschutzmenge',withGasRange(g.root_flow_min,g.root_flow_max)?withGasRange(g.root_flow_min,g.root_flow_max)+' l/min':'')}${r('Vorwärmen',emptyOrUnit(w.preheat_C,'°C'),'Zwischenlage',emptyOrUnit(w.interpass_max_C,'°C'))}${r('Brennerführung',w.torch_direction,'Gashersteller',g.manufacturer)}${p('Bemerkung',e.notes)}</table></section></div>
+ <div class="wm40-sectiontitle">Qualifizierung / Verfahrensprüfung / Nachweis</div>
+ <table class="wm40-gridtable">${r('Qualifizierung',q.basis,'Nachweis-Nr.',q.evidence_number)}${r('WPQR verknüpft',wpqr?.number||'','Prüfstatus',statusLabel(q.evidence_status))}${r('Nachweisdokument',q.document,'Nachweisdatum',wm312Date(q.evidence_date))}${r('Gültig bis',wm312Date(q.valid_until),'WPQR-Prüfstelle',wpqr?.examiner||'')}${wpqrDetails?p('WPQR-Geltungsbereich (manuell)',wpqrDetails):''}${q.scope?p('Geltungsbereich / Hinweise',q.scope):''}</table>
+ <div class="wm40-signatures"><div><b>Erstellt</b><div>${safe(w.author)} · ${safe(wm312Date(e.created_date))}</div></div><div><b>Geprüft</b><div>${safe(e.checked_by)}</div></div><div><b>Freigegeben</b><div>${safe(e.approved_by)}</div></div></div>
+ <div class="foot">Revision ${safe(w.revision)} · Revisionsgrund: ${safe(e.revision_reason)}. Schematische Zeichnungen, nicht maßstäblich. WPQR-Geltungsbereich nur aus manuell hinterlegten Angaben, keine normative Geltungsbereichsprüfung. Produktzulassungen anhand Originalnachweisen prüfen. ENTWURF / NICHT FREIGEGEBEN.</div>`;
+ const logo=loadWmLogo();const anchor=print.querySelector('#wmPrintLogo');if(anchor)anchor.innerHTML=logo?`<img src="${logo}" alt="Firmenlogo">`:'';
+};
+})();
+</script>
+</body></html>

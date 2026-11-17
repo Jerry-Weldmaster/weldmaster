@@ -1,22 +1,22 @@
-WeldMaster PWA 3.1 - Installation und Hinweise
+WeldMaster 4.0 – Entwicklungsversion (Praxistest)
 
-1. ZIP entpacken. Alle 7 Dateien in GitHub Repository Jerry-Weldmaster/weldmaster nach main hochladen und bestehende Dateien ersetzen.
-2. In Safari ggf. App neu laden (bei altem Stand einmal schließen/erneut öffnen).
-3. Bestehende WPS bleiben im lokalen Speicher dieses Browsers; vorher zur Sicherheit „Alle WPS exportieren“.
+INSTALLATION (GitHub Pages):
+1. Dieses ZIP entpacken.
+2. Alle sieben Dateien aus dem ZIP in das Root-Verzeichnis deines GitHub-Repositories hochladen und ersetzen.
+3. Commit durchführen und WeldMaster neu laden. Falls die alte App angezeigt wird, Safari-Seite aktualisieren.
 
-NEU:
-- Capilla-Produkte: kuratierte Auswahl Stahl und CrNi mit TÜV-/DB-Nummern aus Capilla-Katalog 09/2023, S. 437 (historisch, Gültigkeit NICHT geprüft).
-- Für Böhler, ESAB, Lincoln Electric bleibt manuelle Eingabe bestehen, keine fiktiven Produktzulassungen.
-- WPQR-Verwaltung lokal: manuelle Erfassung, Bearbeiten, Löschen, JSON Import/Export und WPS-Zuordnung.
-- Plausibilitätsvergleich Verfahren, Werkstoffgruppe, Dicke, Position, KEINE normative Freigabe.
-- Formularlayout für Gültigkeit und Nachweisdokument auf iPad verbessert.
-- WPQR-Verknüpfung und Produktquelle in WPS-PDF-Vorschau.
+NEU IN 4.0:
+- Firmen-Schweißgeräte links anlegen, bearbeiten, entfernen sowie als JSON sichern/importieren.
+- Mehrere Firmengeräte einer WPS zuordnen. Gerätebezeichnungen werden als Snapshot in der jeweiligen WPS gespeichert.
+- Zusätzliche Felder: Schweißername, ss/bs, nb/mb, Wurzelschutzgas mit Durchfluss, Freigabe, Revisionsgrund.
+- WPS-Ausdruck: Anordnung nach betrieblicher Referenz (Senger-WPS) mit WeldMaster-Farbdesign.
+- Glattere, symmetrische Wurzeldarstellung bei Stumpfnähten.
+- Alle älteren WPS-Daten bleiben im vorhandenen lokalen Speicher.
 
-WICHTIG: WPQR-Register separat lokal gespeichert: eigene JSON-Exportfunktion benutzen.
-Keine hochgeladenen Nachweis-PDFs werden in der App gespeichert; das Dokumentfeld ist eine Referenz.
-Zulassungen aus historischen Katalogen müssen auf aktuelle Gültigkeit geprüft werden.
-Freigabe der WPS und normgerechte Geltungsbereichsauslegung erfolgen ausschließlich durch fachlich zuständige Personen.
-
-WeldMaster 3.1.1: Qualifizierung einspaltig auf iPad; beim Hersteller- oder Zusatzwechsel werden alte TÜV-/DB-Zulassungsnummern und Produktquellen entfernt. Beim Wechsel zu einem konkreten Capilla-Produkt werden historische Katalogzulassungen neu zugeordnet.
-
-WeldMaster 3.1.2: PDF ergaenzt: getrennte Zusatz-Zulassung (Status, Gültig-bis, Nachweisdokument, Quelle/Datenstand), Qualifizierungs-Nachweisdatum und Gültig-bis, verknuepfte WPQR und kompakte Zusammenfassung manuell erfasster WPQR-Geltungsbereiche. Kein automatischer Nachweis der aktuellen Gültigkeit oder normativen Konformität. A4-Drucklayout verdichtet, bei umfangreichen Eintraegen Seitenanzahl in Safari prüfen.
+ACHTUNG:
+Die App bleibt eine Entwicklungsversion. Vor Updates alle WPS als JSON exportieren.
+Auch Schweißgeräte separat als JSON exportieren, falls du sie auf anderen Geräten brauchst.
+Die neu hinzugefügten Felder werden erst beim Speichern einer WPS dauerhaft in ihren Datenbestand übernommen.
+Browser-Lokalspeicherung ist KEINE zentrale Datensicherung.
+Die PDF-Ausgabe wurde technisch erstellt, aber nicht vollständig normativ validiert.
+Qualifizierung und Zulassungen müssen anhand der Originaldokumente geprüft werden.
