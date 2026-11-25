@@ -100,7 +100,7 @@ html[data-theme=dark] .wm40-device-card small,html[data-theme=dark] .wm40-hint{c
 }
 </style>
 <style>
-/* WeldMaster 4.1 · freigegebene Nahtzeichnungen */
+/* WeldMaster 4.2 · Blech- und Rohr-Stumpfnaht mit identischer, flacher Nahtkontur */
 /* WeldMaster 3.2: mobile-first nahtskizzen und Kehlnaht-Masse */
 .wm32-fillet{margin:12px 0 14px;padding:14px;border:1px solid #aabed0;border-radius:12px;background:#f2f7fc}
 .wm32-fillet[hidden]{display:none!important}
@@ -963,7 +963,7 @@ showPrint=function(){
 })();
 </script>
 <script>
-/* WeldMaster 4.1 · freigegebene Nahtzeichnungen */
+/* WeldMaster 4.2 · Blech- und Rohr-Stumpfnaht mit identischer, flacher Nahtkontur */
 /* WeldMaster 3.2: freigegebene Nahtgeometrien I, V, X, Y und Kehlnaht.
    Schematische SVG-Darstellung, kein verifiziertes Schmelzbadmodell.
    Gemeinsamer Renderer fuer Live-Vorschau und PDF-Ausgabe. */
@@ -987,8 +987,14 @@ function wm32Svg(j,finished){
  const angle=wm32safe(wm32n(j.opening_angle_deg,60),0,90);
  const gap=wm32safe(wm32n(j.root_gap_mm),0,20);
  const land=wm32safe(wm32n(j.land_mm),0,Math.max(0,t-.05));
+ // WeldMaster 4.2: Blech- und Rohr-Stumpfnaehte teilen EXAKT denselben
+ // SVG-Renderer. material1_mm ist Blechdicke bzw. Rohrwandstaerke.
+ // Eingegebene Ueberhoehungen bleiben in der WPS unveraendert. Nur die
+ // schematische Wölbung wird bei duennen Wandstaerken flacher dargestellt.
  const crown=wm32safe(wm32n(j.face_reinforcement_mm,Math.min(1.5,t*.15)),0,10);
  const root=wm32safe(wm32n(j.root_reinforcement_mm,Math.min(1,t*.09)),0,10);
+ const drawCrown=Math.min(crown, Math.min(1.5,t*.15));
+ const drawRoot=Math.min(root, Math.min(1,t*.09));
  const metalStroke='#e5eef6';
  let metal='',fill='',outline='',detail='',caption='';
  if(type==='Kehlnaht'){
@@ -1014,7 +1020,7 @@ function wm32Svg(j,finished){
   const sc=Math.min(22,73/t,200/(gap+2*t*Math.tan(ang)+Math.max(1,t*.12)));
   const h=t*sc, top=28+(78-h)/2,bottom=top+h,mid=(top+bottom)/2;
   const g=gap*sc/2, l=x-g,r=x+g;
-  const cp=crown*sc, rp=root*sc;
+  const cp=drawCrown*sc, rp=drawRoot*sc;
   const ss=type==='I-Stumpfnaht'?0:type==='X-Stumpfnaht'?(h/2)*Math.tan(ang):(t-land)*sc*Math.tan(ang);
   const xl=l-ss,xr=r+ss;
   const shoulder=bottom-land*sc;
