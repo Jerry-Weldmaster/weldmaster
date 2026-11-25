@@ -99,6 +99,25 @@ html[data-theme=dark] .wm40-device-card small,html[data-theme=dark] .wm40-hint{c
  .print-sheet .wm40-devices{font-size:8px}
 }
 </style>
+<style>
+/* WeldMaster 4.1 · freigegebene Nahtzeichnungen */
+/* WeldMaster 3.2: mobile-first nahtskizzen und Kehlnaht-Masse */
+.wm32-fillet{margin:12px 0 14px;padding:14px;border:1px solid #aabed0;border-radius:12px;background:#f2f7fc}
+.wm32-fillet[hidden]{display:none!important}
+.wm32-fillet>strong{display:block;margin-bottom:10px;color:#173d60}
+.wm32-fillet-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wm32-fillet-row label{font-size:13px;font-weight:600;min-width:0}
+.wm32-fillet-row select,.wm32-fillet-row input{display:block;width:100%;margin-top:5px;box-sizing:border-box}
+.wm32-explainer{margin:9px 0 0;font-size:12px;line-height:1.4;color:#314b63}
+.live-drawing .wm32-seam-svg{background:#102335;border-radius:9px;color:#eaf1f8;max-height:none;width:100%}
+.print-sheet .wm32-seam-svg{background:#fff!important;color:#173d60;width:100%;height:auto}
+@media(max-width:520px){.wm32-fillet-row{grid-template-columns:1fr}}
+@media print{.print-sheet .wm32-seam-svg{background:white!important;color:#173d60!important}}
+html[data-theme="dark"] .wm32-fillet{background:#1b2f41;border-color:#52677c}
+html[data-theme="dark"] .wm32-fillet>strong{color:#e4f2ff}
+html[data-theme="dark"] .wm32-explainer{color:#b9cbdc}
+
+</style>
 </head><body><header><h1>⚙ WeldMaster</h1><p>WPS-Verwaltung · lokale Speicherung · Entwicklungsversion</p></header><div class="wrap"><aside class="panel"><div class="head"><h2>Meine WPS</h2><span id="count" class="muted"></span></div><details id="wmSettings" open><summary>⚙ Firmeneinstellungen & Design</summary><div class="wm-settings"><label>Firmenname für neue WPS <input id="wmDefaultCompany" type="text" placeholder="Firmenname" oninput="saveWmDefaultCompany(this.value)"></label><label>Ort für neue WPS <input id="wmDefaultCity" type="text" placeholder="Ort" oninput="saveWmDefaultCity(this.value)"></label><label>Design <select id="wmTheme" onchange="setWmTheme(this.value)"><option value="dark">Dunkel</option><option value="light">Hell</option><option value="auto">Automatisch</option></select></label><label>Firmenlogo auswählen <input id="wmLogoInput" type="file" accept="image/png,image/jpeg,image/webp" onchange="uploadWmLogo(event)"></label><button class="secondary" onclick="removeWmLogo()">Logo entfernen</button><img id="wmLogoPreview" class="wm-logo-preview" alt="Firmenlogo" hidden></div><p class="muted">Das Logo wird nur auf diesem Gerät gespeichert. Für die Datensicherung separat aufbewahren.</p></details><div id="list"></div><div class="toolbar"><button onclick="newWps()">+ Neue WPS</button><button class="secondary" onclick="duplicate()">Duplizieren</button></div><div class="toolbar"><label class="filebutton secondary">JSON importieren<input type="file" accept=".json,application/json" onchange="importFile(event)"></label><button class="secondary" onclick="exportAll()">Alle exportieren</button></div><p class="muted">Speicherung erfolgt in diesem Browser auf diesem Gerät. Für Sicherungen regelmäßig JSON exportieren.</p></aside><main class="panel"><div class="head"><h2>WPS bearbeiten</h2><span class="pill">Entwurf / nicht freigegeben</span></div><div id="editor"></div><div class="toolbar"><button onclick="save()">Änderungen speichern</button><button class="secondary" onclick="exportOne()">WPS exportieren</button><button class="danger" onclick="removeWps()">Löschen</button></div><div class="status" id="status" aria-live="polite"></div></main></div><footer>WeldMaster · Kein Cloud-Sync. Daten können bei Löschung der Browserdaten verloren gehen. Keine automatische technische oder normative Freigabe.</footer><script>
 const seed={"schema_version": "1.0", "app": "WeldMaster", "wps": {"number": "WELD-135-001", "revision": "0", "company": "Weldgod", "author": "Max Mustermann", "status": "Entwurf / nicht freigegeben", "process": {"number": "135", "name": "MAG", "execution": "manuell", "polarity": "DC+", "arc": "Kurzlichtbogen", "position": "PA"}, "joint": {"type": "V-Stumpfnaht", "preparation": ["Gereinigt und gebürstet"], "thickness_mm": 10, "opening_angle_deg": 60, "root_gap_mm": 2, "land_mm": 0, "face_reinforcement_mm": 1.5, "root_reinforcement_mm": 1, "misalignment_mm": 0}, "base_materials": [{"designation": "S355JR", "group": "1.2", "thickness_mm": 10, "form": "Blech", "outer_diameter_mm": 60.3}, {"designation": "S355JR", "group": "1.2", "thickness_mm": 10, "form": "Blech", "outer_diameter_mm": 60.3}], "filler": {"designation": "G 42 4 M21 3Si1", "standard": "EN ISO 14341-A", "diameter_mm": 1.0, "manufacturer": "Capilla"}, "shielding_gas": {"group": "M21", "composition": "82 % Ar / 18 % CO₂", "standard": "DIN EN ISO 14175", "flow_l_min": [10, 15], "nozzle_diameter_mm": 12, "manufacturer": "Linde", "root_shielding": false}, "passes": [{"name": "Wurzellage", "current_A": [110, 140], "voltage_V": [17, 20], "wire_feed_m_min": [3.5, 5.0], "travel_speed_cm_min": [15, 25], "technique": "Strichraupe"}], "preheat_C": 20, "interpass_max_C": 150, "stickout_mm": 12, "torch_direction": "stechend", "qualification": {"basis": "DIN EN ISO 15610", "evidence_number": "09673.07", "document": "TÜV-Kennblatt", "evidence_status": "nachweis_geprueft", "scope": null, "manual_comparison_documented": true, "notes": ""}}, "document_layout": {"page": "DIN A4", "drawing_1": "Nahtvorbereitung", "drawing_2": "Fertige Schweißnaht", "drawing_size": "klein", "caption_clearance": "separate", "approved_layout_reference": "WeldMaster_WELD-135-001_Rev0_Beschriftung_frei.pdf"}, "review_required": true};
 const KEY='weldmaster-wps-v1';let db,active;
@@ -942,5 +961,187 @@ showPrint=function(){
  const logo=loadWmLogo();const anchor=print.querySelector('#wmPrintLogo');if(anchor)anchor.innerHTML=logo?`<img src="${logo}" alt="Firmenlogo">`:'';
 };
 })();
+</script>
+<script>
+/* WeldMaster 4.1 · freigegebene Nahtzeichnungen */
+/* WeldMaster 3.2: freigegebene Nahtgeometrien I, V, X, Y und Kehlnaht.
+   Schematische SVG-Darstellung, kein verifiziertes Schmelzbadmodell.
+   Gemeinsamer Renderer fuer Live-Vorschau und PDF-Ausgabe. */
+(function(){
+'use strict';
+const WM32_COLOR='#ff902b', WM32_STROKE='#ff962e', WM32_STEEL='#b8c7d5';
+const wm32n=(x,d=0)=>{const v=Number(x);return Number.isFinite(v)?v:d};
+const wm32safe=(v,a,b)=>Math.max(a,Math.min(b,v));
+const wm32f=v=>String(Math.round(v*1000)/1000);
+function wm32Size(j){
+ const mode=j.fillet_measure==='a'?'a':'z';
+ const value=wm32safe(wm32n(j.fillet_size_mm,6),.2,50);
+ const z=mode==='a'?value*Math.SQRT2:value;
+ return {mode,value,z,a:z/Math.SQRT2};
+}
+function wm32Svg(j,finished){
+ const type=j.type||'V-Stumpfnaht';
+ const m=wm32Size(j);
+ const t1=wm32safe(wm32n(j.material1_mm,j.thickness_mm||5),1,80),t2=wm32safe(wm32n(j.material2_mm,j.thickness_mm||5),1,80);
+ const t=t1; // Hauptdicke folgt live dem Eingabefeld Grundwerkstoff 1.
+ const angle=wm32safe(wm32n(j.opening_angle_deg,60),0,90);
+ const gap=wm32safe(wm32n(j.root_gap_mm),0,20);
+ const land=wm32safe(wm32n(j.land_mm),0,Math.max(0,t-.05));
+ const crown=wm32safe(wm32n(j.face_reinforcement_mm,Math.min(1.5,t*.15)),0,10);
+ const root=wm32safe(wm32n(j.root_reinforcement_mm,Math.min(1,t*.09)),0,10);
+ const metalStroke='#e5eef6';
+ let metal='',fill='',outline='',detail='',caption='';
+ if(type==='Kehlnaht'){
+  const thk=Math.max(t1,t2);
+  const z=wm32safe(m.z,.25,70);
+  const s=Math.min(10,46/thk,56/z);
+  const thicknessV=t1*s, thicknessH=t2*s,leg=z*s;
+  const x=132,y=96,pen=Math.max(1.3,Math.min(Math.min(thicknessV,thicknessH)*.29,leg*.17));
+  const vertical=`M ${wm32f(x-thicknessV)} 17 H ${x} V ${y} H ${wm32f(x-thicknessV)} Z`;
+  const horizontal=`M 21 ${y} H 298 V ${wm32f(y+thicknessH)} H 21 Z`;
+  metal=`<path d="${horizontal}" fill="${WM32_STEEL}" stroke="${metalStroke}" stroke-width="1.6"/><path d="${vertical}" fill="${WM32_STEEL}" stroke="${metalStroke}" stroke-width="1.6"/>`;
+  detail=`<path d="M ${wm32f(x-thicknessV)} ${y} H ${x}" fill="none" stroke="#536b81" stroke-width="1.6"/>`;
+  const w=`M ${x} ${wm32f(y-leg)} Q ${wm32f(x+leg*.65)} ${wm32f(y-leg*.65)} ${wm32f(x+leg)} ${y}
+    C ${wm32f(x+leg*.85)} ${wm32f(y+pen*.1)} ${wm32f(x+leg*.6)} ${wm32f(y+pen)} ${wm32f(x+leg*.37)} ${wm32f(y+pen*.76)}
+    C ${wm32f(x+leg*.15)} ${wm32f(y+pen*.56)} ${wm32f(x+pen*.3)} ${wm32f(y+pen*.75)} ${wm32f(x-pen*.13)} ${wm32f(y+pen*.72)}
+    C ${wm32f(x-pen*.72)} ${wm32f(y+pen*.57)} ${wm32f(x-pen*.97)} ${wm32f(y+pen*.08)} ${wm32f(x-pen*.68)} ${wm32f(y-pen*.22)}
+    C ${wm32f(x-pen*.9)} ${wm32f(y-leg*.33)} ${wm32f(x-pen*.9)} ${wm32f(y-leg*.77)} ${x} ${wm32f(y-leg)} Z`;
+  fill=`<path d="${w}" fill="${WM32_COLOR}" fill-opacity="0.4"/>`;
+  outline=`<path d="M ${x} ${wm32f(y-leg)} Q ${wm32f(x+leg*.65)} ${wm32f(y-leg*.65)} ${wm32f(x+leg)} ${y}" fill="none" stroke="${WM32_STROKE}" stroke-width="2"/>`;
+  caption=`Kehlnaht · ${m.mode} ${wm32f(m.value)} mm · ${m.mode==='a'?'z':'a'} ${wm32f(m.mode==='a'?m.z:m.a)} mm`;
+ }else{
+  const x=159, ang=angle*Math.PI/360;
+  const sc=Math.min(22,73/t,200/(gap+2*t*Math.tan(ang)+Math.max(1,t*.12)));
+  const h=t*sc, top=28+(78-h)/2,bottom=top+h,mid=(top+bottom)/2;
+  const g=gap*sc/2, l=x-g,r=x+g;
+  const cp=crown*sc, rp=root*sc;
+  const ss=type==='I-Stumpfnaht'?0:type==='X-Stumpfnaht'?(h/2)*Math.tan(ang):(t-land)*sc*Math.tan(ang);
+  const xl=l-ss,xr=r+ss;
+  const shoulder=bottom-land*sc;
+  const nl=type==='I-Stumpfnaht'?l:xl, nr=type==='I-Stumpfnaht'?r:xr;
+  let plateL='',plateR='';
+  if(type==='I-Stumpfnaht'){
+    plateL=`M 15 ${wm32f(top)} H ${wm32f(l)} V ${wm32f(bottom)} H 15 Z`;
+    plateR=`M ${wm32f(r)} ${wm32f(top)} H 305 V ${wm32f(bottom)} H ${wm32f(r)} Z`;
+  }else if(type==='X-Stumpfnaht'){
+    plateL=`M 15 ${wm32f(top)} H ${wm32f(xl)} L ${wm32f(l)} ${wm32f(mid)} L ${wm32f(xl)} ${wm32f(bottom)} H 15 Z`;
+    plateR=`M ${wm32f(xr)} ${wm32f(top)} H 305 V ${wm32f(bottom)} H ${wm32f(xr)} L ${wm32f(r)} ${wm32f(mid)} Z`;
+  }else{
+    plateL=`M 15 ${wm32f(top)} H ${wm32f(xl)} L ${wm32f(l)} ${wm32f(shoulder)} V ${wm32f(bottom)} H 15 Z`;
+    plateR=`M ${wm32f(xr)} ${wm32f(top)} H 305 V ${wm32f(bottom)} H ${wm32f(r)} V ${wm32f(shoulder)} Z`;
+  }
+  metal=`<path d="${plateL}" fill="${WM32_STEEL}" stroke="${metalStroke}" stroke-width="1.55"/><path d="${plateR}" fill="${WM32_STEEL}" stroke="${metalStroke}" stroke-width="1.55"/>`;
+  if(type==='I-Stumpfnaht'){
+    const p=Math.max(2.5,Math.min(12,h*.11));
+    const w=Math.max(4,g+p*.6);
+    const capTop=top-1.5*cp,rootBottom=bottom+1.5*rp;
+    fill=`<path d="M ${wm32f(x-w)} ${wm32f(top)} Q ${x} ${wm32f(capTop)} ${wm32f(x+w)} ${wm32f(top)}
+     C ${wm32f(x+w+p*.5)} ${wm32f(top+h*.22)} ${wm32f(x+w+p*.55)} ${wm32f(bottom-h*.22)} ${wm32f(x+w)} ${wm32f(bottom)}
+     Q ${x} ${wm32f(rootBottom)} ${wm32f(x-w)} ${wm32f(bottom)}
+     C ${wm32f(x-w-p*.55)} ${wm32f(bottom-h*.22)} ${wm32f(x-w-p*.5)} ${wm32f(top+h*.22)} ${wm32f(x-w)} ${wm32f(top)} Z" fill="${WM32_COLOR}" fill-opacity="0.4"/>`;
+    outline=`<path d="M ${wm32f(x-w)} ${wm32f(top)} Q ${x} ${wm32f(capTop)} ${wm32f(x+w)} ${wm32f(top)} M ${wm32f(x-w)} ${wm32f(bottom)} Q ${x} ${wm32f(rootBottom)} ${wm32f(x+w)} ${wm32f(bottom)}" stroke="${WM32_STROKE}" stroke-width="1.8" fill="none"/>`;
+  }else if(type==='X-Stumpfnaht'){
+    const p=Math.max(2,Math.min(22,h*.135));
+    // Exakt dieselbe Kontur oben und vertikal gespiegelt unten.
+    const upperL=`M ${wm32f(xl)} ${wm32f(top)} L ${wm32f(l)} ${wm32f(mid)} C ${wm32f(l-ss*.2-p)} ${wm32f(mid-h*.15)} ${wm32f(xl+ss*.35-p)} ${wm32f(top+h*.17)} ${wm32f(xl)} ${wm32f(top)} Z`;
+    const lowerL=`M ${wm32f(xl)} ${wm32f(bottom)} L ${wm32f(l)} ${wm32f(mid)} C ${wm32f(l-ss*.2-p)} ${wm32f(mid+h*.15)} ${wm32f(xl+ss*.35-p)} ${wm32f(bottom-h*.17)} ${wm32f(xl)} ${wm32f(bottom)} Z`;
+    const upperR=`M ${wm32f(xr)} ${wm32f(top)} L ${wm32f(r)} ${wm32f(mid)} C ${wm32f(r+ss*.2+p)} ${wm32f(mid-h*.15)} ${wm32f(xr-ss*.35+p)} ${wm32f(top+h*.17)} ${wm32f(xr)} ${wm32f(top)} Z`;
+    const lowerR=`M ${wm32f(xr)} ${wm32f(bottom)} L ${wm32f(r)} ${wm32f(mid)} C ${wm32f(r+ss*.2+p)} ${wm32f(mid+h*.15)} ${wm32f(xr-ss*.35+p)} ${wm32f(bottom-h*.17)} ${wm32f(xr)} ${wm32f(bottom)} Z`;
+    const core=`M ${wm32f(xl)} ${wm32f(top)} Q ${x} ${wm32f(top-cp*1.6)} ${wm32f(xr)} ${wm32f(top)} L ${wm32f(r)} ${wm32f(mid)} L ${wm32f(xr)} ${wm32f(bottom)} Q ${x} ${wm32f(bottom+cp*1.6)} ${wm32f(xl)} ${wm32f(bottom)} L ${wm32f(l)} ${wm32f(mid)} Z`;
+    fill=`<path d="${core}" fill="${WM32_COLOR}" fill-opacity=".4"/>${[upperL,lowerL,upperR,lowerR].map(d=>`<path d="${d}" fill="${WM32_COLOR}" fill-opacity=".4"/>`).join('')}`;
+    // Die Spitzen sind durchgehend Grundwerkstoff: nach dem Einbrand die graue Spitze ohne Kontur ueberlagern.
+    fill+=`<path d="M ${wm32f(l-3.1)} ${wm32f(mid-4.6)} L ${wm32f(l)} ${wm32f(mid)} L ${wm32f(l-3.1)} ${wm32f(mid+4.6)} Z M ${wm32f(r+3.1)} ${wm32f(mid-4.6)} L ${wm32f(r)} ${wm32f(mid)} L ${wm32f(r+3.1)} ${wm32f(mid+4.6)} Z" fill="${WM32_STEEL}"/>`;
+    outline=`<path d="M ${wm32f(xl)} ${wm32f(top)} Q ${x} ${wm32f(top-cp*1.6)} ${wm32f(xr)} ${wm32f(top)} M ${wm32f(xl)} ${wm32f(bottom)} Q ${x} ${wm32f(bottom+cp*1.6)} ${wm32f(xr)} ${wm32f(bottom)}" stroke="${WM32_STROKE}" stroke-width="2" fill="none"/>
+     <path d="M ${wm32f(xl)} ${wm32f(top)} C ${wm32f(xl+ss*.35-p)} ${wm32f(top+h*.17)} ${wm32f(l-ss*.2-p)} ${wm32f(mid-h*.15)} ${wm32f(l)} ${wm32f(mid)} C ${wm32f(l-ss*.2-p)} ${wm32f(mid+h*.15)} ${wm32f(xl+ss*.35-p)} ${wm32f(bottom-h*.17)} ${wm32f(xl)} ${wm32f(bottom)}
+     M ${wm32f(xr)} ${wm32f(top)} C ${wm32f(xr-ss*.35+p)} ${wm32f(top+h*.17)} ${wm32f(r+ss*.2+p)} ${wm32f(mid-h*.15)} ${wm32f(r)} ${wm32f(mid)} C ${wm32f(r+ss*.2+p)} ${wm32f(mid+h*.15)} ${wm32f(xr-ss*.35+p)} ${wm32f(bottom-h*.17)} ${wm32f(xr)} ${wm32f(bottom)}" fill="none" stroke="${WM32_STROKE}" stroke-width="1.2" stroke-opacity=".85"/>
+     <path d="M ${wm32f(l-3.1)} ${wm32f(mid-4.6)} L ${wm32f(l)} ${wm32f(mid)} L ${wm32f(l-3.1)} ${wm32f(mid+4.6)} Z M ${wm32f(r+3.1)} ${wm32f(mid-4.6)} L ${wm32f(r)} ${wm32f(mid)} L ${wm32f(r+3.1)} ${wm32f(mid+4.6)} Z" fill="${WM32_STEEL}"/>`;
+    detail=`<path d="M ${wm32f(xl)} ${wm32f(top)} L ${wm32f(l)} ${wm32f(mid)} L ${wm32f(xl)} ${wm32f(bottom)} M ${wm32f(xr)} ${wm32f(top)} L ${wm32f(r)} ${wm32f(mid)} L ${wm32f(xr)} ${wm32f(bottom)}" stroke="#637d94" stroke-width="0.8" fill="none" opacity=".75"/>`;
+  }else {
+    const p=Math.max(1.7,Math.min(12,h*(type==='V-Stumpfnaht'?.075:.065)));
+    const core=`M ${wm32f(xl)} ${wm32f(top)} Q ${x} ${wm32f(top-cp*1.6)} ${wm32f(xr)} ${wm32f(top)} L ${wm32f(r)} ${wm32f(shoulder)} L ${wm32f(r)} ${wm32f(bottom)} Q ${x} ${wm32f(bottom+rp*1.5)} ${wm32f(l)} ${wm32f(bottom)} L ${wm32f(l)} ${wm32f(shoulder)} Z`;
+    const left=`M ${wm32f(xl)} ${wm32f(top)} L ${wm32f(l)} ${wm32f(shoulder)} L ${wm32f(l)} ${wm32f(bottom)} C ${wm32f(l-p)} ${wm32f(bottom-h*.09)} ${wm32f(l-p)} ${wm32f(shoulder+h*.06)} ${wm32f(l-p)} ${wm32f(shoulder-h*.04)} C ${wm32f(l-ss*.5-p)} ${wm32f(top+h*.5)} ${wm32f(xl-p*.12)} ${wm32f(top+h*.16)} ${wm32f(xl)} ${wm32f(top)} Z`;
+    const right=`M ${wm32f(xr)} ${wm32f(top)} L ${wm32f(r)} ${wm32f(shoulder)} L ${wm32f(r)} ${wm32f(bottom)} C ${wm32f(r+p)} ${wm32f(bottom-h*.09)} ${wm32f(r+p)} ${wm32f(shoulder+h*.06)} ${wm32f(r+p)} ${wm32f(shoulder-h*.04)} C ${wm32f(r+ss*.5+p)} ${wm32f(top+h*.5)} ${wm32f(xr+p*.12)} ${wm32f(top+h*.16)} ${wm32f(xr)} ${wm32f(top)} Z`;
+    fill=`<path d="${core}" fill="${WM32_COLOR}" fill-opacity=".4"/><path d="${left}" fill="${WM32_COLOR}" fill-opacity=".4"/><path d="${right}" fill="${WM32_COLOR}" fill-opacity=".4"/>`;
+    outline=`<path d="M ${wm32f(xl)} ${wm32f(top)} Q ${x} ${wm32f(top-cp*1.6)} ${wm32f(xr)} ${wm32f(top)} M ${wm32f(l)} ${wm32f(bottom)} Q ${x} ${wm32f(bottom+rp*1.5)} ${wm32f(r)} ${wm32f(bottom)}" stroke="${WM32_STROKE}" stroke-width="1.85" fill="none"/>`;
+    detail=`<path d="M ${wm32f(xl)} ${wm32f(top)} L ${wm32f(l)} ${wm32f(shoulder)} V ${wm32f(bottom)} M ${wm32f(xr)} ${wm32f(top)} L ${wm32f(r)} ${wm32f(shoulder)} V ${wm32f(bottom)}" fill="none" stroke="#637d94" stroke-width="0.75"/>`;
+  }
+  caption=type+' · s '+wm32f(t)+' mm · b '+wm32f(gap)+' mm';
+ }
+ // Erst zwei getrennte Bleche, dann Schweißgut und Einbrand. Bei Nahtvorbereitung kein Schweißgut.
+ return `<svg class="wm32-seam-svg" viewBox="0 0 320 165" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${type} ${finished?'fertige Schweißnaht':'Nahtvorbereitung'}">
+ <rect x="0" y="0" width="320" height="150" fill="transparent"/>${metal}${finished?fill+outline:detail}
+ <text x="160" y="13" font-size="10" text-anchor="middle" fill="currentColor">${finished?'Fertige Schweißnaht':'Nahtvorbereitung'}</text>
+ <text x="160" y="159" font-size="8.4" text-anchor="middle" fill="currentColor">${caption}</text></svg>`;
+}
+// Existing code calls diagram() from both the editor and print view; one implementation avoids mismatches.
+diagram=wm32Svg;
+window.wm32RenderSeam=wm32Svg;
+
+const previousRender=render;
+render=function(){
+ previousRender();
+ if(!db?.length || !db[active])return;
+ const w=db[active].wps,editor=document.getElementById('editor');
+ if(!editor)return;
+ if(!w.joint)w.joint={};
+ if(!['a','z'].includes(w.joint.fillet_measure))w.joint.fillet_measure='z';
+ if(!Number.isFinite(Number(w.joint.fillet_size_mm))||Number(w.joint.fillet_size_mm)<=0)w.joint.fillet_size_mm=6;
+ const geoHead=Array.from(editor.querySelectorAll('h3')).find(x=>x.textContent.trim()==='Nahtgeometrie');
+ if(!geoHead)return;
+ const area=document.createElement('div');area.id='wm32Fillet';area.className='wm32-fillet';
+ area.innerHTML=`<strong>Kehlnahtgröße: a-Maß oder z-Maß</strong><div class="wm32-fillet-row"><label>Maßart <select data-path="joint.fillet_measure" id="wm32Mode"><option value="a">a-Maß (Nahtdicke)</option><option value="z">z-Maß (Schenkellänge)</option></select></label><label>Wert (mm) <input data-path="joint.fillet_size_mm" id="wm32Value" type="number" min="0.2" max="50" step="0.1" inputmode="decimal" required></label></div><p id="wm32Converted" class="wm32-explainer"></p><p class="wm32-explainer">Gleichschenklige 90°-Kehlnaht: a = z / √2. Die Auswahl und der Wert werden mit der WPS gespeichert.</p>`;
+ const grid=geoHead.nextElementSibling;
+ if(grid)grid.after(area);else geoHead.after(area);
+ const mode=area.querySelector('#wm32Mode'),value=area.querySelector('#wm32Value');
+ mode.value=w.joint.fillet_measure;value.value=w.joint.fillet_size_mm;
+ const refresh=()=>{
+   area.hidden=w.joint.type!=='Kehlnaht';
+   const v=wm32Size({...w.joint,fillet_measure:mode.value,fillet_size_mm:value.value});
+   area.querySelector('#wm32Converted').textContent=mode.value==='a'?`Berechnetes z-Maß: ${v.z.toLocaleString('de-DE',{maximumFractionDigits:2})} mm`:`Berechnetes a-Maß: ${v.a.toLocaleString('de-DE',{maximumFractionDigits:2})} mm`;
+   const t=editor.querySelector('[data-path="joint.type"]');
+   if(t)t.dispatchEvent(new Event('input',{bubbles:true}));
+ };
+ mode.addEventListener('change',()=>{
+   const old=wm32Size({...w.joint,fillet_measure:w.joint.fillet_measure,fillet_size_mm:value.value});
+   const next=mode.value;
+   const converted=next==='a'?old.a:old.z;
+   value.value=wm32f(converted);
+   w.joint.fillet_measure=next;w.joint.fillet_size_mm=Number(value.value);
+   refresh();
+ });
+ value.addEventListener('input',()=>{
+   const n=Number(value.value);
+   if(Number.isFinite(n)&&n>=.2&&n<=50)w.joint.fillet_size_mm=n;
+   refresh();
+ });
+ for(const id of ['wmJointClass','wmJointShape']){
+  const control=editor.querySelector('#'+id);
+  if(control)control.addEventListener('change',()=>{area.hidden=w.joint.type!=='Kehlnaht';refresh()});
+ }
+ refresh();
+};
+
+const priorPrint=showPrint;
+showPrint=function(){
+ if(!db?.length)return;
+ priorPrint();
+ const j=db[active].wps.joint;
+ if(j.type!=='Kehlnaht')return;
+ const main=document.getElementById('printSheet');
+ if(!main)return;
+ const target=[...main.querySelectorAll('h2')].find(x=>x.textContent.includes('Nahtgeometrie'));
+ const table=target?.nextElementSibling || [...main.querySelectorAll('.wm40-sectiontitle')].find(x=>x.textContent.includes('Gestaltung der Verbindung'))?.nextElementSibling;
+ if(table?.tagName==='TABLE'){
+   const dim=wm32Size(j);
+   const tr=document.createElement('tr');
+   const msg=dim.mode==='a'?'Nahtdicke a':'Schenkellänge z';
+   const other=dim.mode==='a'?'Schenkellänge z':'Nahtdicke a';
+   tr.innerHTML='<th>'+msg+'</th><td>'+wm32f(dim.value).replace('.',',')+' mm</td><th>'+other+' (berechnet)</th><td>'+wm32f(dim.mode==='a'?dim.z:dim.a).replace('.',',')+' mm</td>';
+   table.appendChild(tr);
+ }
+};
+render();
+})();
+
 </script>
 </body></html>
